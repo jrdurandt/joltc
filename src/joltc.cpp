@@ -63,6 +63,7 @@ JPH_SUPPRESS_WARNINGS
 #include "Jolt/Physics/Character/CharacterVirtual.h"
 #include <Jolt/Physics/Collision/PhysicsMaterialSimple.h>
 #include "Jolt/Core/LinearCurve.h"
+#include "Jolt/Physics/Vehicle/WheeledVehicleController.h"
 
 #include <iostream>
 #include <cstdarg>
@@ -7552,5 +7553,39 @@ void JPH_LinearCurve_SetPoints(JPH_LinearCurve* curve, JPH_Point* points, size_t
 
 	joltCurve->mPoints = joltPoints;
 }
+
+void JPH_WheelSettings_Init(const JPH::WheelSettings& joltSettings, JPH_WheelSettings* settings) {
+	// Copy defaults from jolt
+	FromJolt(joltSettings.mPosition, &settings->position);
+	FromJolt(joltSettings.mSuspensionForcePoint, &settings->suspensionForcePoint);
+	FromJolt(joltSettings.mSuspensionDirection, &settings->suspensionForcePoint);
+	FromJolt(joltSettings.mSteeringAxis, &settings->steeringAxis);
+	FromJolt(joltSettings.mWheelUp, &settings->wheelUp);
+	FromJolt(joltSettings.mWheelForward, &settings->wheelForward);
+	settings->suspensionMinLength = joltSettings.mSuspensionMinLength;
+	settings->suspensionMaxLength = joltSettings.mSuspensionMaxLength;
+	settings->suspensionPreloadLength = joltSettings.mSuspensionPreloadLength;
+	FromJolt(joltSettings.mSuspensionSpring, &settings->suspensionSpring);
+	settings->radius = joltSettings.mRadius;
+	settings->width = joltSettings.mWidth;
+	settings->enableSuspensionForcePoint = joltSettings.mEnableSuspensionForcePoint;
+}
+
+void JPH_WheelSettingsWV_Init(JPH_WheelSettingsWV* settings) {
+	JPH_ASSERT(settings);
+
+	JPH::WheelSettingsWV joltSettings;
+	JPH_WheelSettings_Init(joltSettings, &settings->base);
+
+	settings->inertia = joltSettings.mInertia;
+	settings->angularDamping = joltSettings.mAngularDamping;
+	settings->maxSteerAngle = joltSettings.mMaxSteerAngle;
+	settings->longitudinalFriction = reinterpret_cast<JPH_LinearCurve* >(&joltSettings.mLongitudinalFriction);
+	settings->lateralFriction = reinterpret_cast<JPH_LinearCurve* >(&joltSettings.mLateralFriction);
+	settings->maxBrakeTorque = joltSettings.mMaxBrakeTorque;
+	settings->maxHandBrakeTorque = joltSettings.mMaxHandBrakeTorque;
+}
+
+
 
 JPH_SUPPRESS_WARNING_POP

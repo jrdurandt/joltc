@@ -2072,5 +2072,58 @@ JPH_CAPI size_t JPH_LinearCurve_GetNumPoints(JPH_LinearCurve* curve);
 JPH_CAPI void JPH_LinearCurve_GetPoints(JPH_LinearCurve* curve, JPH_Point* points);
 JPH_CAPI void JPH_LinearCurve_SetPoints(JPH_LinearCurve* curve, JPH_Point* points, size_t pointCount);
 
+typedef struct JPH_WheelSettings {
+	JPH_Vec3 position;
+	JPH_Vec3 suspensionForcePoint;
+	JPH_Vec3 suspensionDirection;
+	JPH_Vec3 steeringAxis;
+	JPH_Vec3 wheelUp;
+	JPH_Vec3 wheelForward;
+	float suspensionMinLength;
+	float suspensionMaxLength;
+	float suspensionPreloadLength;
+	JPH_SpringSettings suspensionSpring;
+	float radius;
+	float width;
+	bool enableSuspensionForcePoint;
+} JPH_WheelSettings;
+
+typedef struct JPH_WheelSettingsWV {
+	JPH_WheelSettings base;
+	float inertia;
+	float angularDamping;
+	float maxSteerAngle;
+	JPH_LinearCurve* longitudinalFriction;
+	JPH_LinearCurve* lateralFriction;
+	float maxBrakeTorque;
+	float maxHandBrakeTorque;
+} JPH_WheelSettingsWV;
+
+JPH_CAPI void JPH_WheelSettingsWV_Init(JPH_WheelSettingsWV* settings);
+
+typedef struct JPH_VehicleAntiRollBar {
+	int leftWheel;
+	int rightWheel;
+	float stiffness;
+} JPH_VehicleAntiRollBar;
+
+typedef struct JPH_VehicleControllerSettings JPH_VehicleControllerSettings;
+typedef struct JPH_VehicleController JPH_VehicleController;
+
+typedef struct JPH_VehicleConstraintSettings {
+	JPH_Vec3 up;
+	JPH_Vec3 forward;
+	float maxPitchPollAngle;
+
+	JPH_WheelSettings** wheels;
+	JPH_VehicleAntiRollBar* antiRollBars;
+	JPH_VehicleControllerSettings* controller;
+}
+JPH_VehicleConstraintSettings;
+
+typedef struct JPH_VehicleConstraint JPH_VehicleConstraint;
+JPH_CAPI JPH_VehicleConstraint* JPH_VehicleConstraint_Create(JPH_Body* vehicleBody, JPH_VehicleConstraintSettings* settings);
+JPH_CAPI void JPH_VehicleConstraint_SetMaxPitchRollAngle(JPH_VehicleConstraint* constraint, float maxPitchRollAngle);
+//TODO: Rest of VehicleConstraint settings
 
 #endif /* JOLT_C_H_ */
