@@ -62,6 +62,7 @@ JPH_SUPPRESS_WARNINGS
 #include "Jolt/Physics/Character/Character.h"
 #include "Jolt/Physics/Character/CharacterVirtual.h"
 #include <Jolt/Physics/Collision/PhysicsMaterialSimple.h>
+#include "Jolt/Core/LinearCurve.h"
 
 #include <iostream>
 #include <cstdarg>
@@ -7474,5 +7475,82 @@ void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH
 	reinterpret_cast<DebugRenderer*>(renderer)->DrawWireUnitSphere(ToJolt(matrix), JPH::Color(color), level);
 }
 #endif
+
+/* Extensions */
+JPH_LinearCurve* JPH_LinearCurve_Init() {
+	const auto joltCurve = new JPH::LinearCurve();
+	return reinterpret_cast<JPH_LinearCurve *>(joltCurve);
+}
+
+void JPH_LinearCurve_Clear(JPH_LinearCurve* curve) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve *>(curve);
+	joltCurve->Clear();
+}
+
+void JPH_LinearCurve_Reserve(JPH_LinearCurve* curve,  uint32_t numPoints) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve *>(curve);
+	joltCurve->Reserve(numPoints);
+}
+
+void JPH_LinearCurve_AddPoint(JPH_LinearCurve* curve, float x, float y) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve *>(curve);
+	joltCurve->AddPoint(x, y);
+}
+
+void JPH_LinearCurve_Sort(JPH_LinearCurve* curve) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve *>(curve);
+	joltCurve->Sort();
+}
+
+float JPH_LinearCurve_GetMinX(JPH_LinearCurve* curve) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve *>(curve);
+	return joltCurve->GetMinX();
+}
+
+float JPH_LinearCurve_GetMaxX(JPH_LinearCurve* curve) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve *>(curve);
+	return joltCurve->GetMaxX();
+}
+
+float JPH_LinearCurve_GetValue(JPH_LinearCurve* curve, float x) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve *>(curve);
+	return joltCurve->GetValue(x);
+}
+
+size_t JPH_LinearCurve_GetNumPoints(JPH_LinearCurve* curve) {
+	const auto joltCurve = reinterpret_cast<JPH::LinearCurve*>(curve);
+	auto joltPoints = joltCurve->mPoints;
+	return joltPoints.size();
+}
+
+void JPH_LinearCurve_GetPoints(JPH_LinearCurve* curve, JPH_Point* points) {
+	const auto joltCurve = reinterpret_cast<JPH::LinearCurve*>(curve);
+	auto joltPoints = joltCurve->mPoints;
+	auto pointCount = joltPoints.size();
+	for (auto i = 0; i < pointCount; i++) {
+		auto point = JPH_Point{
+			joltPoints[i].mX,
+			joltPoints[i].mY,
+		};
+		points[i] = point;
+	}
+}
+
+void JPH_LinearCurve_SetPoints(JPH_LinearCurve* curve, JPH_Point* points, size_t pointCount) {
+	auto joltCurve = reinterpret_cast<JPH::LinearCurve*>(curve);
+
+	Array<JPH::LinearCurve::Point> joltPoints;
+	joltPoints.reserve(pointCount);
+
+	for (auto i = 0; i < pointCount; i++) {
+		auto joltPoint = JPH::LinearCurve::Point{
+			points[i].x,
+			points[i].y,
+		};
+		joltPoints.push_back(joltPoint);
+	}
+
+	joltCurve->mPoints = joltPoints;
+}
 
 JPH_SUPPRESS_WARNING_POP
