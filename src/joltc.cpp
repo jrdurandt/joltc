@@ -5,6 +5,9 @@
 
 #include <Jolt/Core/Core.h>
 
+#include "Jolt/Physics/Vehicle/Wheel.h"
+#include "Jolt/Physics/Vehicle/WheeledVehicleController.h"
+
 JPH_SUPPRESS_WARNING_PUSH
 JPH_SUPPRESS_WARNINGS
 
@@ -7474,5 +7477,37 @@ void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH
 	reinterpret_cast<DebugRenderer*>(renderer)->DrawWireUnitSphere(ToJolt(matrix), JPH::Color(color), level);
 }
 #endif
+
+void JPH_WheelSettings_Init(const JPH::WheelSettings& joltSettings, JPH_WheelSettings* settings) {
+	// Copy defaults from jolt
+	FromJolt(joltSettings.mPosition, &settings->position);
+	FromJolt(joltSettings.mSuspensionForcePoint, &settings->suspensionForcePoint);
+	FromJolt(joltSettings.mSuspensionDirection, &settings->suspensionForcePoint);
+	FromJolt(joltSettings.mSteeringAxis, &settings->steeringAxis);
+	FromJolt(joltSettings.mWheelUp, &settings->wheelUp);
+	FromJolt(joltSettings.mWheelForward, &settings->wheelForward);
+	settings->suspensionMinLength = joltSettings.mSuspensionMinLength;
+	settings->suspensionMaxLength = joltSettings.mSuspensionMaxLength;
+	settings->suspensionPreloadLength = joltSettings.mSuspensionPreloadLength;
+	FromJolt(joltSettings.mSuspensionSpring, &settings->suspensionSpring);
+	settings->radius = joltSettings.mRadius;
+	settings->width = joltSettings.mWidth;
+	settings->enableSuspensionForcePoint = joltSettings.mEnableSuspensionForcePoint;
+}
+
+void JPH_WheelSettingsWV_Init(JPH_WheelSettingsWV* settings) {
+	JPH_ASSERT(settings);
+
+	JPH::WheelSettingsWV joltSettings;
+	JPH_WheelSettings_Init(joltSettings, &settings->base);
+
+	settings->inertia = joltSettings.mInertia;
+	settings->angularDamping = joltSettings.mAngularDamping;
+	settings->maxSteerAngle = joltSettings.mMaxSteerAngle;
+	// settings->longitudinalFriction = joltSettings.mLongitudinalFriction;
+	// settings->lateralFriction = joltSettings.mLateralFriction;
+	settings->maxBrakeTorque = joltSettings.mMaxBrakeTorque;
+	settings->maxHandBrakeTorque = joltSettings.mMaxHandBrakeTorque;
+}
 
 JPH_SUPPRESS_WARNING_POP

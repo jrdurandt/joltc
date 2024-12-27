@@ -2052,4 +2052,31 @@ JPH_CAPI void JPH_DebugRenderer_DrawWireTriangle(JPH_DebugRenderer* renderer, co
 JPH_CAPI void JPH_DebugRenderer_DrawWireSphere(JPH_DebugRenderer* renderer, const JPH_RVec3* center, float radius, JPH_Color color, int level);
 JPH_CAPI void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH_RMatrix4x4* matrix, JPH_Color color, int level);
 
+typedef struct JPH_WheelSettings {
+	JPH_Vec3 position;
+	JPH_Vec3 suspensionForcePoint;
+	JPH_Vec3 suspensionDirection;
+	JPH_Vec3 steeringAxis;
+	JPH_Vec3 wheelUp;
+	JPH_Vec3 wheelForward;
+	float suspensionMinLength;
+	float suspensionMaxLength;
+	float suspensionPreloadLength;
+	JPH_SpringSettings suspensionSpring;
+	float radius;
+	float width;
+	bool enableSuspensionForcePoint;
+} JPH_WheelSettings;
+
+typedef struct JPH_WheelSettingsWV {
+	JPH_WheelSettings base;
+	float inertia;
+	float angularDamping;
+	float maxSteerAngle;
+	float longitudinalFriction;
+	float lateralFriction;
+	float maxBrakeTorque;
+	float maxHandBrakeTorque;
+} JPH_WheelSettingsWV;
+
 #endif /* JOLT_C_H_ */
