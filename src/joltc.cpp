@@ -67,6 +67,9 @@ JPH_SUPPRESS_WARNINGS
 #include "Jolt/Physics/Collision/PhysicsMaterialSimple.h"
 #include "Jolt/Physics/Body/BodyLockMulti.h"
 
+#include "Jolt/Physics/Vehicle/VehicleConstraint.h"
+#include "Jolt/Physics/Vehicle/WheeledVehicleController.h"
+
 #include <iostream>
 #include <cstdarg>
 

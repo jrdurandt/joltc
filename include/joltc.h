@@ -917,6 +917,36 @@ typedef struct JPH_JobSystemConfig {
 
 typedef struct JPH_JobSystem JPH_JobSystem;
 
+typedef enum JPH_TransmissionMode {
+	JPH_TransmissionMode_Auto = 0,
+	JPH_TransmissionMode_Manual = 1,
+} JPH_TransmissionMode;
+
+// Vehicle settings
+typedef struct JPH_VehicleConstraintSettings		JPH_VehicleConstraintSettings;
+typedef struct JPH_VehicleControllerSettings 		JPH_VehicleControllerSettings;
+typedef struct JPH_WheeledVehicleControllerSettings JPH_WheeledVehicleControllerSettings;
+typedef struct JPH_VehicleEngineSettings 			JPH_VehicleEngineSettings;
+typedef struct JPH_VehicleTransmissionSettings 		JPH_VehicleTransmissionSettings;
+typedef struct JPH_VehicleDifferentialSettings 		JPH_VehicleDifferentialSettings;
+typedef struct JPH_WheelSettings 					JPH_WheelSettings;
+typedef struct JPH_WheelSettingsWV 					JPH_WheelSettingsWV;
+
+// Vehicles
+typedef struct JPH_VehicleConstraint 					JPH_VehicleConstraint;
+typedef struct JPH_VehicleController 					JPH_VehicleController;
+typedef struct JPH_WheeledVehicleController 			JPH_WheeledVehicleController;
+typedef struct JPH_VehicleEngine 						JPH_VehicleEngine;
+typedef struct JPH_VehicleTransmission 					JPH_VehicleTransmission;
+typedef struct JPH_VehicleDifferential 					JPH_VehicleDifferential;
+typedef struct JPH_VehicleAntiRollBar 					JPH_VehicleAntiRollBar;
+typedef struct JPH_Wheel 								JPH_Wheel;
+typedef struct JPH_WheelWV 								JPH_WheelWV;
+typedef struct JPH_VehicleCollisionTester 				JPH_VehicleCollisionTester;
+typedef struct JPH_VehicleCollisionTesterRay 			JPH_VehicleCollisionTesterRay;
+typedef struct JPH_VehicleCollisionTesterCastSphere 	JPH_VehicleCollisionTesterCastSphere;
+typedef struct JPH_VehicleCollisionTesterCastCylinder 	JPH_VehicleCollisionTesterCastCylinder;
+
 JPH_CAPI JPH_JobSystem* JPH_JobSystemThreadPool_Create(const JobSystemThreadPoolConfig* config);
 JPH_CAPI JPH_JobSystem* JPH_JobSystemCallback_Create(const JPH_JobSystemConfig* config);
 JPH_CAPI void JPH_JobSystem_Destroy(JPH_JobSystem* jobSystem);
