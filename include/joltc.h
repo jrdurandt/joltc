@@ -47,7 +47,6 @@
 #define JPH_CAPSULE_PROJECTION_SLOP (0.02f) // float cCapsuleProjectionSlop = 0.02f
 #define JPH_MAX_PHYSICS_JOBS (2048) // int cMaxPhysicsJobs = 2048
 #define JPH_MAX_PHYSICS_BARRIERS (2048) // int cMaxPhysicsBarriers = 8
-#define JPH_PI (3.14159265358979323846f)
 #define JPH_ANGULAR_VELOCITY_TO_RPM (60.0f / (2.0f * JPH_PI))
 
 typedef uint32_t JPH_BodyID;
@@ -2360,7 +2359,7 @@ JPH_CAPI void JPH_LinearCurve_Sort(JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_LinearCurve_GetMinX(JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_LinearCurve_GetMaxX(JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_LinearCurve_GetValue(JPH_LinearCurve* linearCurve, float x);
-JPH_CAPI void JPH_LinearCurve_GetPoints(JPH_LinearCurve* linearCurve, JPH_Point* points, size_t* count);
+JPH_CAPI void JPH_LinearCurve_GetPoints(JPH_LinearCurve* linearCurve, JPH_Point** points, size_t* count);
 JPH_CAPI void JPH_LinearCurve_SetPoints(JPH_LinearCurve* linearCurve, const JPH_Point* points, size_t count);
 
 /* JPH_VehicleConstraintSettings */
@@ -2657,7 +2656,7 @@ JPH_CAPI bool JPH_VehicleCollisionTester_Collide(
 );
 JPH_CAPI void JPH_VehicleCollisionTester_PredictContactProperties(
 	JPH_PhysicsSystem* inPhysicsSystem, 
-	VehicleConstraint* vehicleConstraint, 
+	JPH_VehicleConstraint* vehicleConstraint, 
 	uint32_t wheelIndex, 
 	JPH_RVec3* origin, 
 	JPH_Vec3* direction, 
