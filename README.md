@@ -5,6 +5,6 @@
 
 [JoltPhysics](https://github.com/jrouwe/JoltPhysics) C interface.
 
-## Sponsors
+## Sponsor amerkoleci
 Please consider [SPONSOR](https://github.com/sponsors/amerkoleci) me to further help development and to allow faster issue triaging and new features to be implemented.
 **_NOTE:_** **any feature request** would require a [sponsor](https://github.com/sponsors/amerkoleci) in order to allow faster implementation and allow this project to continue.
