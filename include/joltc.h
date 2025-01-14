@@ -2367,15 +2367,17 @@ JPH_CAPI void JPH_LinearCurve_SetPoints(JPH_LinearCurve* linearCurve, const JPH_
 JPH_CAPI JPH_VehicleConstraintSettings* JPH_VehicleConstraintSettings_Init(void);
 JPH_CAPI void JPH_VehicleConstraintSettings_GetUp(JPH_VehicleConstraintSettings* settings, JPH_Vec3* up);
 JPH_CAPI void JPH_VehicleConstraintSettings_SetUp(JPH_VehicleConstraintSettings* settings, const JPH_Vec3* up);
-JPH_CAPI void JPH_VehicleConstraintSettings_GetUp(JPH_VehicleConstraintSettings* settings, JPH_Vec3* forward);
-JPH_CAPI void JPH_VehicleConstraintSettings_SetUp(JPH_VehicleConstraintSettings* settings, const JPH_Vec3* forward);
+JPH_CAPI void JPH_VehicleConstraintSettings_GetForward(JPH_VehicleConstraintSettings* settings, JPH_Vec3* forward);
+JPH_CAPI void JPH_VehicleConstraintSettings_SetForward(JPH_VehicleConstraintSettings* settings, const JPH_Vec3* forward);
 JPH_CAPI float JPH_VehicleConstraintSettings_GetMaxPitchRollAngle(JPH_VehicleConstraintSettings* settings);
+JPH_CAPI void JPH_VehicleConstraintSettings_SetMaxPitchRollAngle(JPH_VehicleConstraintSettings* settings, float maxPitchRollAngle);
 JPH_CAPI void JPH_VehicleConstraintSettings_GetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t* count);
-JPH_CAPI void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, const JPH_WheelSettings* wheels, size_t count);
-JPH_CAPI void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar** antiRollBars, size_t* count); 
-JPH_CAPI void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings* settings, const JPH_VehicleAntiRollBar* antiRollBars, size_t count); 
-JPH_CAPI JPH_VehicleController* JPH_VehicleConstraintSettings_GetController(JPH_VehicleConstraintSettings* settings); 
-JPH_CAPI void JPH_VehicleConstraintSettings_SetController(JPH_VehicleConstraintSettings* settings, const JPH_VehicleController* controller); 
+JPH_CAPI void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t count);
+JPH_CAPI size_t JPH_VehicleConstraintSettings_GetAntiRollBarsCount(JPH_VehicleConstraintSettings* settings); 
+JPH_CAPI void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar* antiRollBars); 
+JPH_CAPI void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar* antiRollBars, size_t count); 
+JPH_CAPI JPH_VehicleControllerSettings* JPH_VehicleConstraintSettings_GetController(JPH_VehicleConstraintSettings* settings); 
+JPH_CAPI void JPH_VehicleConstraintSettings_SetController(JPH_VehicleConstraintSettings* settings, JPH_VehicleControllerSettings* controller); 
 
 /* JPH_VehicleControllerSettings */
 JPH_CAPI JPH_WheeledVehicleControllerSettings* JPH_WheeledVehicleControllerSettings_Init(void);
@@ -2578,13 +2580,20 @@ JPH_CAPI float JPH_VehicleTransmission_GetCurrentRatio(JPH_VehicleTransmission* 
 JPH_CAPI bool JPH_VehicleTransmission_AllowSleep(JPH_VehicleTransmission* transmission);
 
 /* JPH_VehicleAntiRollBar */
-JPH_CAPI JPH_VehicleAntiRollBar* JPH_VehicleAntiRollBar_Init();
-JPH_CAPI int JPH_VehicleAntiRollBar_GetLeftWheel(JPH_VehicleAntiRollBar* antiRollbar);
-JPH_CAPI void JPH_VehicleAntiRollBar_SetLeftWheel(JPH_VehicleAntiRollBar* antiRollbar, int leftWheel);
-JPH_CAPI int JPH_VehicleAntiRollBar_GetRightWheel(JPH_VehicleAntiRollBar* antiRollbar);
-JPH_CAPI void JPH_VehicleAntiRollBar_SetRightWheel(JPH_VehicleAntiRollBar* antiRollbar, int rightWheel);
-JPH_CAPI float JPH_VehicleAntiRollBar_GetStiffness(JPH_VehicleAntiRollBar* antiRollbar);
-JPH_CAPI void JPH_VehicleAntiRollBar_SetStiffness(JPH_VehicleAntiRollBar* antiRollbar, float stiffness);
+typedef struct JPH_VehicleAntiRollBar {
+	int leftWheel;
+	int rightWheel;
+	float stiffness;
+} JPH_VehicleAntiRollBar;
+
+JPH_CAPI JPH_VehicleAntiRollBar JPH_VehicleAntiRollBar_Init();
+
+// JPH_CAPI int JPH_VehicleAntiRollBar_GetLeftWheel(JPH_VehicleAntiRollBar* antiRollbar);
+// JPH_CAPI void JPH_VehicleAntiRollBar_SetLeftWheel(JPH_VehicleAntiRollBar* antiRollbar, int leftWheel);
+// JPH_CAPI int JPH_VehicleAntiRollBar_GetRightWheel(JPH_VehicleAntiRollBar* antiRollbar);
+// JPH_CAPI void JPH_VehicleAntiRollBar_SetRightWheel(JPH_VehicleAntiRollBar* antiRollbar, int rightWheel);
+// JPH_CAPI float JPH_VehicleAntiRollBar_GetStiffness(JPH_VehicleAntiRollBar* antiRollbar);
+// JPH_CAPI void JPH_VehicleAntiRollBar_SetStiffness(JPH_VehicleAntiRollBar* antiRollbar, float stiffness);
 
 /* JPH_Wheel */
 JPH_CAPI JPH_Wheel* JPH_Wheel_Create(JPH_WheelSettings* settings);

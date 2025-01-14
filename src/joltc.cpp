@@ -8232,7 +8232,9 @@ void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH
 }
 #endif
 
- // JPH_LinearCurve
+//--------------------------------------------------------------------------------------------------
+// JPH_LinearCurve
+//--------------------------------------------------------------------------------------------------
 
 JPH_LinearCurve* JPH_LinearCurve_Create(void)
 {
@@ -8307,5 +8309,127 @@ void JPH_LinearCurve_SetPoints(JPH_LinearCurve* linearCurve, const JPH_Point* po
 		joltPoints[i] = ToJolt(points[i]);
 	}
 }
+
+//--------------------------------------------------------------------------------------------------
+// JPH_VehicleConstraintSettings
+//--------------------------------------------------------------------------------------------------
+static inline JPH::VehicleAntiRollBar ToJolt(const JPH_VehicleAntiRollBar antiRollbar) 
+{
+	JPH::VehicleAntiRollBar result{0};
+	result.mLeftWheel = antiRollbar.leftWheel;
+	result.mRightWheel = antiRollbar.rightWheel;
+	result.mStiffness = antiRollbar.stiffness;
+	return result;
+}
+
+static inline JPH_VehicleAntiRollBar FromJolt(const JPH::VehicleAntiRollBar antiRollbar) 
+{
+	JPH_VehicleAntiRollBar result{0};
+	result.leftWheel = antiRollbar.mLeftWheel;
+	result.rightWheel = antiRollbar.mRightWheel;
+	result.stiffness = antiRollbar.mStiffness;
+	return result;
+}
+
+
+JPH_VehicleConstraintSettings* JPH_VehicleConstraintSettings_Init(void)
+{
+	auto settings = new JPH::VehicleConstraintSettings();
+	return reinterpret_cast<JPH_VehicleConstraintSettings*>(settings);
+}
+
+void JPH_VehicleConstraintSettings_GetUp(JPH_VehicleConstraintSettings* settings, JPH_Vec3* up)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	FromJolt(joltSettings->mUp, up);
+}
+
+void JPH_VehicleConstraintSettings_SetUp(JPH_VehicleConstraintSettings* settings, const JPH_Vec3* up)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	joltSettings->mUp = ToJolt(up);
+}
+
+void JPH_VehicleConstraintSettings_GetForward(JPH_VehicleConstraintSettings* settings, JPH_Vec3* forward)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	FromJolt(joltSettings->mForward, forward);
+}
+
+void JPH_VehicleConstraintSettings_SetForward(JPH_VehicleConstraintSettings* settings, const JPH_Vec3* forward)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	joltSettings->mForward = ToJolt(forward);
+}
+
+float JPH_VehicleConstraintSettings_GetMaxPitchRollAngle(JPH_VehicleConstraintSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	return joltSettings->mMaxPitchRollAngle;
+}
+
+void JPH_VehicleConstraintSettings_SetMaxPitchRollAngle(JPH_VehicleConstraintSettings* settings, float maxPitchRollAngle)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	joltSettings->mMaxPitchRollAngle = maxPitchRollAngle;
+}
+
+void JPH_VehicleConstraintSettings_GetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t* count)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	auto joltWheels = joltSettings->mWheels;
+	*count = joltWheels.size();
+	*wheels = reinterpret_cast<JPH_WheelSettings*>(joltWheels.data());
+}
+
+void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t count)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	auto joltWheels = joltSettings->mWheels;
+	joltWheels.resize(count);
+	joltWheels[0] = reinterpret_cast<JPH::WheelSettings*>(wheels[0]);
+}
+
+size_t JPH_VehicleConstraintSettings_GetAntiRollBarsCount(JPH_VehicleConstraintSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	return joltSettings->mAntiRollBars.size();
+}
+
+
+void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar* antiRollBars)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	auto joltAntiRollBars = joltSettings->mAntiRollBars;
+	for(int i = 0; i < joltAntiRollBars.size(); i++) {
+		antiRollBars[i] = FromJolt(joltAntiRollBars[i]);
+	}
+}
+
+void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar* antiRollBars, size_t count)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	auto joltAntiRollBars = joltSettings->mAntiRollBars;
+	joltAntiRollBars.resize(count);
+	for(int i = 0; i < count; i++) {
+		joltAntiRollBars[i] = ToJolt(antiRollBars[i]);
+	}
+}
+
+JPH_VehicleControllerSettings* JPH_VehicleConstraintSettings_GetController(JPH_VehicleConstraintSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	return reinterpret_cast<JPH_VehicleControllerSettings*>(&joltSettings->mController);
+}
+
+void JPH_VehicleConstraintSettings_SetController(JPH_VehicleConstraintSettings* settings, JPH_VehicleControllerSettings* controller)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+	joltSettings->mController = reinterpret_cast<JPH::VehicleControllerSettings*>(controller);
+}
+
+//--------------------------------------------------------------------------------------------------
+// JPH_VehicleControllerSettings
+//--------------------------------------------------------------------------------------------------
 
 JPH_SUPPRESS_WARNING_POP
