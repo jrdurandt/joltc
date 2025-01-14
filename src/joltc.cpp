@@ -327,6 +327,13 @@ static inline void FromJolt(const CharacterVirtual::Contact& jolt, JPH_Character
 	result->canPushCharacter = jolt.mCanPushCharacter;
 }
 
+static inline JPH_Point FromJolt(JPH::LinearCurve::Point point){
+	JPH_Point result;
+	result.x = point.mX;
+	result.y = point.mY;
+	return result;
+}
+
 // To Jolt conversion methods
 static inline JPH::Vec3 ToJolt(const JPH_Vec3& vec)
 {
@@ -439,6 +446,15 @@ static inline JPH::MotorSettings ToJolt(const JPH_MotorSettings* settings)
 	result.mMaxTorqueLimit = settings->maxTorqueLimit;
 	return result;
 }
+
+static inline JPH::LinearCurve::Point ToJolt(const JPH_Point point)
+{
+	JPH::LinearCurve::Point result{};
+	result.mX = point.x;
+	result.mY = point.y;
+	return result;
+}
+
 void JPH_MassProperties_DecomposePrincipalMomentsOfInertia(JPH_MassProperties* properties, JPH_Matrix4x4* rotation, JPH_Vec3* diagonal)
 {
 	JPH::Mat44 joltRotation;
@@ -8216,6 +8232,7 @@ void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH
 }
 #endif
 
+ // JPH_LinearCurve
 
 JPH_LinearCurve* JPH_LinearCurve_Create(void)
 {
@@ -8265,20 +8282,30 @@ float JPH_LinearCurve_GetValue(JPH_LinearCurve* linearCurve, float x)
 	return joltLinearCurve->GetValue(x);
 }
 
-void JPH_LinearCurve_GetPoints(JPH_LinearCurve* linearCurve, JPH_Point** points, size_t* count)
+size_t JPH_LinearCurve_GetPointsCount(JPH_LinearCurve* linearCurve)
 {
-	// auto joltLinearCurve = reinterpret_cast<JPH::LinearCurve*>(linearCurve)
-	// auto joltPoints = joltLinearCurve->mPoints;
-	// &count = joltPoints.Size();
-	// &points = joltPoints.data();
+	auto joltLinearCurve = reinterpret_cast<JPH::LinearCurve*>(linearCurve);
+	auto joltPoints = joltLinearCurve->mPoints;
+	return joltPoints.size();
+}
+
+void JPH_LinearCurve_GetPoints(JPH_LinearCurve* linearCurve, JPH_Point* points, size_t count)
+{
+	auto joltLinearCurve = reinterpret_cast<JPH::LinearCurve*>(linearCurve);
+	auto joltPoints = joltLinearCurve->mPoints;
+	for(int i = 0; i < joltPoints.size(); i ++){
+		points[i] = FromJolt(joltPoints[i]);
+	}
 }
 
 void JPH_LinearCurve_SetPoints(JPH_LinearCurve* linearCurve, const JPH_Point* points, size_t count)
 {
-	// auto joltLinearCurve = reinterpret_cast<JPH::LinearCurve*>(linearCurve)
-	// auto joltPoints = joltLinearCurve->mPoints;
-	// &count = joltPoints.Size();
-	// &points = joltPoints.data();
+	auto joltLinearCurve = reinterpret_cast<JPH::LinearCurve*>(linearCurve);
+	auto joltPoints = joltLinearCurve->mPoints;
+	joltPoints.resize(count);
+	for(int i = 0; i < count; i ++){
+		joltPoints[i] = ToJolt(points[i]);
+	}
 }
 
 JPH_SUPPRESS_WARNING_POP

@@ -2359,7 +2359,8 @@ JPH_CAPI void JPH_LinearCurve_Sort(JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_LinearCurve_GetMinX(JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_LinearCurve_GetMaxX(JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_LinearCurve_GetValue(JPH_LinearCurve* linearCurve, float x);
-JPH_CAPI void JPH_LinearCurve_GetPoints(JPH_LinearCurve* linearCurve, JPH_Point** points, size_t* count);
+JPH_CAPI size_t JPH_LinearCurve_GetPointsCount(JPH_LinearCurve*);
+JPH_CAPI void JPH_LinearCurve_GetPoints(JPH_LinearCurve* linearCurve, JPH_Point* points, size_t count);
 JPH_CAPI void JPH_LinearCurve_SetPoints(JPH_LinearCurve* linearCurve, const JPH_Point* points, size_t count);
 
 /* JPH_VehicleConstraintSettings */
