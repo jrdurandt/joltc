@@ -930,7 +930,7 @@ typedef struct JPH_PhysicsStepListenerContext {
 	float deltaTime;
 	bool isFirstStep;
 	bool isLastStep;
-	PhysicsSystem* physicsSystem;
+	JPH_PhysicsSystem* physicsSystem;
 } JPH_PhysicsStepListenerContext;
 
 // Vehicle settings
@@ -2347,14 +2347,14 @@ JPH_CAPI void JPH_DebugRenderer_DrawWireSphere(JPH_DebugRenderer* renderer, cons
 JPH_CAPI void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH_RMatrix4x4* matrix, JPH_Color color, int level);
 
  /* JPH_LinearCurve */
- typedef JPH_Point {
+ typedef struct JPH_Point {
 	float x;
 	float y;
  } JPH_Point;
 
 JPH_CAPI JPH_LinearCurve* JPH_LinearCurve_Create(void);
 JPH_CAPI void JPH_LinearCurve_Clear(JPH_LinearCurve* linearCurve);
-JPH_CAPI void JPH_LinearCurve_Reserve(JPH_LinearCurve* linearCurve, uint numPoints);
+JPH_CAPI void JPH_LinearCurve_Reserve(JPH_LinearCurve* linearCurve, uint32_t numPoints);
 JPH_CAPI void JPH_LinearCurve_AddPoint(JPH_LinearCurve* linearCurve, float x, float y);
 JPH_CAPI void JPH_LinearCurve_Sort(JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_LinearCurve_GetMinX(JPH_LinearCurve* linearCurve);
@@ -2400,7 +2400,7 @@ JPH_CAPI void JPH_VehicleEngineSettings_SetMaxRPM(JPH_VehicleEngineSettings* set
 JPH_CAPI JPH_LinearCurve* JPH_VehicleEngineSettings_GetLinearCurve(JPH_VehicleEngineSettings* settings);
 JPH_CAPI void JPH_VehicleEngineSettings_SetLinearCurve(JPH_VehicleEngineSettings* settings, const JPH_LinearCurve* linearCurve);
 JPH_CAPI float JPH_VehicleEngineSettings_GetInertia(JPH_VehicleEngineSettings* settings);
-JPH_CAPI void JPH_VehicleEngineSettings_GetInertia(JPH_VehicleEngineSettings* settings, float inertia);
+JPH_CAPI void JPH_VehicleEngineSettings_SetInertia(JPH_VehicleEngineSettings* settings, float inertia);
 JPH_CAPI float JPH_VehicleEngineSettings_GetAngularDamping(JPH_VehicleEngineSettings* settings);
 JPH_CAPI void JPH_VehicleEngineSettings_SetAngularDamping(JPH_VehicleEngineSettings* settings, float angularDamping);
 
@@ -2487,10 +2487,10 @@ JPH_CAPI float JPH_WheelSettingsWV_GetMaxHandBrakeTorque(JPH_WheelSettingsWV* se
 JPH_CAPI void JPH_WheelSettingsWV_SetMaxHandBrakeTorque(JPH_WheelSettingsWV* settings, float maxHandBrakeTorque);
 
 /* JPH_VehicleConstraint */
-typedef void JPH_CombineFunction(uint wheelIndex, float* longitudinalFriction, float* lateralFriction, const JPH_Body* body2, const JPH_SubShapeID subshapeID2);
+typedef void JPH_CombineFunction(uint32_t wheelIndex, float* longitudinalFriction, float* lateralFriction, const JPH_Body* body2, const JPH_SubShapeID subshapeID2);
 typedef void JPH_StepCallback(JPH_VehicleConstraint* vehicle, JPH_PhysicsStepListenerContext* context);
 
-JPH_CAPI JPH_VehicleConstraint* JPH_VehicleConstraint_Create(Body *vehicleBody, VehicleConstraintSettings* settings);
+JPH_CAPI JPH_VehicleConstraint* JPH_VehicleConstraint_Create(JPH_Body* vehicleBody, JPH_VehicleConstraintSettings* settings);
 JPH_CAPI void JPH_VehicleConstraint_Destroy(JPH_VehicleConstraint* constraint);
 JPH_CAPI JPH_ConstraintType JPH_VehicleConstraint_GetSubType(JPH_VehicleConstraint* constraint);
 JPH_CAPI void JPH_VehicleConstraint_SetMaxPitchRollAngle(JPH_VehicleConstraint* constraint, float maxPitchRollAngle);
@@ -2514,14 +2514,14 @@ JPH_CAPI JPH_Body* JPH_VehicleConstraint_GetVehicleBody(JPH_VehicleConstraint* c
 JPH_CAPI JPH_VehicleController* JPH_VehicleConstraint_GetController(JPH_VehicleConstraint* constraint);
 JPH_CAPI void JPH_VehicleConstraint_GetWheels(JPH_VehicleConstraint* constraint, JPH_Wheel** wheels, size_t* count);
 JPH_CAPI void JPH_VehicleConstraint_SetWheels(JPH_VehicleConstraint* constraint, JPH_Wheel* wheels, size_t count);
-JPH_CAPI JPH_Wheel* JPH_VehicleConstraint_GetWheel(JPH_VehicleConstraint* constraint, uint idx);
+JPH_CAPI JPH_Wheel* JPH_VehicleConstraint_GetWheel(JPH_VehicleConstraint* constraint, uint32_t idx);
 JPH_CAPI void JPH_VehicleConstraint_GetWheelLocalBasis(JPH_VehicleConstraint* constraint, JPH_Wheel* wheel, JPH_Vec3* forward, JPH_Vec3* up, JPH_Vec3* right);
-JPH_CAPI void JPH_VehicleConstraint_GetWheelLocalTransform(JPH_VehicleConstraint* constraint, uint index, JPH_Vec3* right, JPH_Vec3* up, JPH_Matrix4x4* transform);
-JPH_CAPI void JPH_VehicleConstraint_GetWheelWorldTransform(JPH_VehicleConstraint* constraint, uint index, JPH_Vec3* right, JPH_Vec3* up, JPH_Matrix4x4* transform);
-JPH_CAPI void JPH_VehicleConstraint_SetNumStepsBetweenCollisionTestActive(JPH_VehicleConstraint* constraint, uint steps);
-JPH_CAPI uint JPH_VehicleConstraint_GetNumStepsBetweenCollisionTestActive(JPH_VehicleConstraint* constraint);
-JPH_CAPI void JPH_VehicleConstraint_SetNumStepsBetweenCollisionTestInactive(JPH_VehicleConstraint* constraint, uint steps);
-JPH_CAPI uint JPH_VehicleConstraint_GetNumStepsBetweenCollisionTestInactive(JPH_VehicleConstraint* constraint);
+JPH_CAPI void JPH_VehicleConstraint_GetWheelLocalTransform(JPH_VehicleConstraint* constraint, uint32_t index, JPH_Vec3* right, JPH_Vec3* up, JPH_Matrix4x4* transform);
+JPH_CAPI void JPH_VehicleConstraint_GetWheelWorldTransform(JPH_VehicleConstraint* constraint, uint32_t index, JPH_Vec3* right, JPH_Vec3* up, JPH_Matrix4x4* transform);
+JPH_CAPI void JPH_VehicleConstraint_SetNumStepsBetweenCollisionTestActive(JPH_VehicleConstraint* constraint, uint32_t steps);
+JPH_CAPI uint32_t JPH_VehicleConstraint_GetNumStepsBetweenCollisionTestActive(JPH_VehicleConstraint* constraint);
+JPH_CAPI void JPH_VehicleConstraint_SetNumStepsBetweenCollisionTestInactive(JPH_VehicleConstraint* constraint, uint32_t steps);
+JPH_CAPI uint32_t JPH_VehicleConstraint_GetNumStepsBetweenCollisionTestInactive(JPH_VehicleConstraint* constraint);
 
 /* JPH_VehicleController */
 JPH_CAPI JPH_VehicleController* JPH_VehicleController_Create(JPH_VehicleConstraint* contraint);
@@ -2529,7 +2529,7 @@ JPH_CAPI void JPH_VehicleController_Destroy(JPH_VehicleController* controller);
 JPH_CAPI JPH_VehicleConstraint* JPH_VehicleController_GetConstraint(JPH_VehicleController* controller);
 
 /* JPH_WheeledVehicleController */
-typedef void JPH_TireMaxImpulseCallback(uint wheelIndex, float* longitudinalImpulse, float* lateralImpulse, float suspensionImpulse, float longitudinalFriction, float lateralFriction, float longitudinalSlip, float lateralSlip, float deltaTime);
+typedef void JPH_TireMaxImpulseCallback(uint32_t wheelIndex, float* longitudinalImpulse, float* lateralImpulse, float suspensionImpulse, float longitudinalFriction, float lateralFriction, float longitudinalSlip, float lateralSlip, float deltaTime);
 
 JPH_CAPI JPH_WheeledVehicleController* JPH_WheeledVehicleController_Create(JPH_WheeledVehicleControllerSettings* settings);
 JPH_CAPI void JPH_WheeledVehicleController_Destroy(JPH_WheeledVehicleController* controller);
@@ -2597,8 +2597,8 @@ JPH_CAPI void JPH_Wheel_SetRotationAngle(JPH_Wheel* wheel, float angle);
 JPH_CAPI float JPH_Wheel_GetSteerAngle(JPH_Wheel* wheel);
 JPH_CAPI void JPH_Wheel_SetSteerAngle(JPH_Wheel* wheel, float angle);
 JPH_CAPI bool JPH_Wheel_HasContact(JPH_Wheel* wheel);
-JPH_CAPI BodyID JPH_Wheel_GetContactBodyID(JPH_Wheel* wheel);
-JPH_CAPI SubShapeID JPH_Wheel_GetContactSubShapeID(JPH_Wheel* wheel);
+JPH_CAPI JPH_BodyID JPH_Wheel_GetContactBodyID(JPH_Wheel* wheel);
+JPH_CAPI JPH_SubShapeID JPH_Wheel_GetContactSubShapeID(JPH_Wheel* wheel);
 JPH_CAPI void JPH_Wheel_GetContactPosition(JPH_Wheel* wheel, JPH_RVec3* position);
 JPH_CAPI void JPH_Wheel_GetContactPointVelocity(JPH_Wheel* wheel, JPH_Vec3* velocity);
 JPH_CAPI void JPH_Wheel_GetContactNormal(JPH_Wheel* wheel, JPH_Vec3* normal);
@@ -2645,7 +2645,7 @@ JPH_CAPI void JPH_VehicleCollisionTester_SetBodyFilter(JPH_VehicleCollisionTeste
 JPH_CAPI bool JPH_VehicleCollisionTester_Collide(
 	JPH_PhysicsSystem* physicsSystem, 
 	JPH_VehicleConstraint* vehicleConstraint, 
-	uint wheelIndex, 
+	uint32_t wheelIndex, 
 	JPH_RVec3* origin, 
 	JPH_Vec3* direction, 
 	JPH_BodyID vehicleBodyID, 
@@ -2658,7 +2658,7 @@ JPH_CAPI bool JPH_VehicleCollisionTester_Collide(
 JPH_CAPI void JPH_VehicleCollisionTester_PredictContactProperties(
 	JPH_PhysicsSystem* inPhysicsSystem, 
 	VehicleConstraint* vehicleConstraint, 
-	uint wheelIndex, 
+	uint32_t wheelIndex, 
 	JPH_RVec3* origin, 
 	JPH_Vec3* direction, 
 	JPH_BodyID vehicleBodyID, 
@@ -2676,7 +2676,7 @@ JPH_CAPI bool JPH_VehicleCollisionTesterRay_Collide(
 	JPH_VehicleCollisionTesterRay* tester, 
 	JPH_PhysicsSystem* physicsSystem, 
 	JPH_VehicleConstraint* vehicleConstraint, 
-	uint wheelIndex, 
+	uint32_t wheelIndex, 
 	JPH_RVec3* origin, 
 	JPH_Vec3* direction, 
 	JPH_BodyID vehicleBodyID, 
@@ -2689,7 +2689,7 @@ JPH_CAPI bool JPH_VehicleCollisionTesterRay_Collide(
 JPH_CAPI void JPH_VehicleCollisionTesterRay_PredictContactProperties(
 	JPH_PhysicsSystem* physicsSystem,
 	JPH_VehicleConstraint* vehicleConstraint, 
-	uint wheelIndex, 
+	uint32_t wheelIndex, 
 	JPH_RVec3* origin, 
 	JPH_Vec3* direction, 
 	JPH_BodyID vehicleBodyID, 
@@ -2704,7 +2704,7 @@ JPH_CAPI void JPH_VehicleCollisionTesterRay_PredictContactProperties(
 JPH_CAPI bool JPH_VehicleCollisionTesterCastSphere_Collide(
 	JPH_PhysicsSystem* physicsSystem,
 	JPH_VehicleConstraint* vehicleConstraint, 
-	uint wheelIndex, 
+	uint32_t wheelIndex, 
 	JPH_RVec3* origin, 
 	JPH_Vec3* direction, 
 	JPH_BodyID vehicleBodyID, 
@@ -2717,7 +2717,7 @@ JPH_CAPI bool JPH_VehicleCollisionTesterCastSphere_Collide(
 JPH_CAPI void JPH_VehicleCollisionTesterCastSphere_PredictContactProperties(
 	JPH_PhysicsSystem* physicsSystem, 
 	JPH_VehicleConstraint* vehicleConstraint, 
-	uint wheelIndex, 
+	uint32_t wheelIndex, 
 	JPH_RVec3* origin, 
 	JPH_Vec3* direction, 
 	JPH_BodyID vehicleBodyID,  
@@ -2733,7 +2733,7 @@ JPH_CAPI void JPH_VehicleCollisionTesterCastSphere_PredictContactProperties(
 JPH_CAPI bool JPH_VehicleCollisionTesterCastCylinder_Collide(
     JPH_PhysicsSystem* physicsSystem,
     const JPH_VehicleConstraint* vehicleConstraint,
-    uint wheelIndex,
+    uint32_t wheelIndex,
     JPH_RVec3* origin,
     JPH_Vec3* direction,
     JPH_BodyID vehicleBodyID,
@@ -2746,7 +2746,7 @@ JPH_CAPI bool JPH_VehicleCollisionTesterCastCylinder_Collide(
 JPH_CAPI void JPH_VehicleCollisionTesterCastCylinde_PredictContactProperties(
     JPH_PhysicsSystem* physicsSystem, 
     const JPH_VehicleConstraint* vehicleConstraint, 
-    uint wheelIndex, 
+    uint32_t wheelIndex, 
     JPH_RVec3* origin, 
     JPH_Vec3* direction, 
     JPH_BodyID vehicleBodyID, 
