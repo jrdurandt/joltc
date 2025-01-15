@@ -8310,51 +8310,6 @@ void JPH_LinearCurve_SetPoints(JPH_LinearCurve* linearCurve, const JPH_Point* po
 	}
 }
 
-//--------------------------------------------------------------------------------------------------
-// JPH_VehicleDifferentialSettings
-//--------------------------------------------------------------------------------------------------
-void JPH_VehicleDifferentialSettings_ToJolt(JPH::VehicleDifferentialSettings* joltSettings, const JPH_VehicleDifferentialSettings* settings)
-{
-	JPH_ASSERT(joltSettings);
-	JPH_ASSERT(settings);
-
-	joltSettings->mLeftWheel = settings->leftWheel;
-	joltSettings->mRightWheel = settings->rightWheel;
-	joltSettings->mDifferentialRatio = settings->differentialRatio;
-	joltSettings->mLeftRightSplit = settings->leftRightSplit;
-	joltSettings->mLimitedSlipRatio = settings->limitedSlipRatio;
-	joltSettings->mEngineTorqueRatio = settings->engineTorqueRatio;
-}
-
-void JPH_VehicleDifferentialSettings_FromJolt(JPH_VehicleDifferentialSettings* settings, const JPH::VehicleDifferentialSettings& joltSettings)
-{
-	JPH_ASSERT(settings);
-
-	settings->leftWheel = joltSettings.mLeftWheel;
-	settings->rightWheel = joltSettings.mRightWheel;
-	settings->differentialRatio = joltSettings.mDifferentialRatio;
-	settings->leftRightSplit = joltSettings.mLeftRightSplit;
-	settings->limitedSlipRatio = joltSettings.mLimitedSlipRatio;
-	settings->engineTorqueRatio = joltSettings.mEngineTorqueRatio;
-}
-
-void JPH_VehicleDifferentialSettings_Init(JPH_VehicleDifferentialSettings* settings)
-{
-	JPH_ASSERT(settings);
-
-	// Copy defaults from jolt 
-	JPH::VehicleDifferentialSettings joltSettings;
-	JPH_VehicleDifferentialSettings_FromJolt(settings, joltSettings);
-}
-
-void JPH_VehicleDifferentialSettings_CalculateTorqueRatio(JPH_VehicleDifferentialSettings* settings, float leftAngularVelocity, float rightAngularVelocity, float* leftTorqueFraction, float* rightTorqueFraction)
-{
-	JPH_ASSERT(settings);
-
-	JPH::VehicleDifferentialSettings joltSettings;
-	JPH_VehicleDifferentialSettings_ToJolt(&joltSettings, settings);
-	joltSettings.CalculateTorqueRatio(leftAngularVelocity, rightAngularVelocity, *leftTorqueFraction, *rightTorqueFraction);
-}
 
 //--------------------------------------------------------------------------------------------------
 // JPH_VehicleAntiRollBar
@@ -8374,55 +8329,268 @@ void JPH_VehicleAntiRollBar_FromJolt(JPH_VehicleAntiRollBar* arb, const JPH::Veh
 	arb->stiffness = joltArb.mStiffness;
 }
 
-void JPH_VehicleAntiRollBar_Init(JPH_VehicleAntiRollBar* antiRollBar)
+void JPH_VehicleAntiRollBar_Default(JPH_VehicleAntiRollBar* antiRollBar)
 {
-	// Copy defaults from jolt 
-	JPH::VehicleAntiRollBar joltArb;
-	JPH_VehicleAntiRollBar_FromJolt(antiRollBar, joltArb);
+	JPH::VehicleAntiRollBar joltAntiRollBar;
+	JPH_VehicleAntiRollBar_FromJolt(antiRollBar, joltAntiRollBar);
 }
+
+// JPH_VehicleAntiRollBar* JPH_VehicleAntiRollBar_Init(void)
+// {
+// 	auto joltAntiRollBar = new JPH::VehicleAntiRollBar();
+// 	return reinterpret_cast<JPH_VehicleAntiRollBar*>(joltAntiRollBar);
+// }
+
+// int JPH_VehicleAntiRollBar_GetLeftWheel(JPH_VehicleAntiRollBar* antiRollBar)
+// {
+// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
+// 	return joltAntiRollBar->mLeftWheel;
+// }
+
+// void JPH_VehicleAntiRollBar_GetLeftWheel(JPH_VehicleAntiRollBar* antiRollBar, int leftWheel)
+// {
+// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
+// 	joltAntiRollBar->mLeftWheel = leftWheel;
+// }
+
+// int JPH_VehicleAntiRollBar_GetRightWheel(JPH_VehicleAntiRollBar* antiRollBar)
+// {
+// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
+// 	return joltAntiRollBar->mRightWheel;
+// }
+
+// void JPH_VehicleAntiRollBar_SetRightWheel(JPH_VehicleAntiRollBar* antiRollBar, int rightWheel)
+// {
+// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
+// 	joltAntiRollBar->mRightWheel = rightWheel;
+// }
+
+// float JPH_VehicleAntiRollBar_GetStiffness(JPH_VehicleAntiRollBar* antiRollBar)
+// {
+// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
+// 	return joltAntiRollBar->mStiffness;
+// }
+
+// void JPH_VehicleAntiRollBar_SetStiffness(JPH_VehicleAntiRollBar* antiRollBar, float stiffness)
+// {
+// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
+// 	joltAntiRollBar->mStiffness = stiffness;
+// }
 
 //--------------------------------------------------------------------------------------------------
 // JPH_VehicleTransmissionSettings
 //--------------------------------------------------------------------------------------------------
 
-void JPH_VehicleTransmissionSettings_ToJolt(JPH::VehicleTransmissionSettings* joltSettings, const JPH_VehicleTransmissionSettings* settings)
+JPH_VehicleTransmissionSettings* JPH_VehicleTransmissionSettings_Init(void)
 {
-	joltSettings->mMode = static_cast<JPH::ETransmissionMode>(settings->mode);
-	joltSettings->mGearRatios.resize(settings->gearRatioCount);
-	joltSettings->mGearRatios[0] = settings->gearRatios[0];
-	joltSettings->mReverseGearRatios.resize(settings->reverseGearRatioCount);
-	joltSettings->mReverseGearRatios[0] = settings->reverseGearRatios[0];
-	joltSettings->mSwitchTime = settings->switchTime;
-	joltSettings->mClutchReleaseTime = settings->clutchReleaseTime;
-	joltSettings->mSwitchLatency = settings->switchLatency;
-	joltSettings->mShiftUpRPM = settings->shiftUpRPM;
-	joltSettings->mShiftDownRPM = settings->shiftDownRPM;
-	joltSettings->mClutchStrength = settings->clutchStrength;
-}
-
-void JPH_VehicleTransmissionSettings_FromJolt(JPH_VehicleTransmissionSettings* settings, const JPH::VehicleTransmissionSettings& joltSettings)
-{
-	JPH_ASSERT(settings);
-
-	settings->mode = static_cast<JPH_TransmissionMode>(joltSettings.mMode);
-	settings->gearRatioCount = joltSettings.mGearRatios.size();
-	settings->gearRatios = (float*)joltSettings.mGearRatios.data();
-	settings->reverseGearRatioCount = joltSettings.mReverseGearRatios.size();
-	settings->reverseGearRatios = (float*)joltSettings.mReverseGearRatios.data();
-	settings->switchTime = joltSettings.mSwitchTime;
-	settings->clutchReleaseTime = joltSettings.mClutchReleaseTime;
-	settings->switchLatency = joltSettings.mSwitchLatency;
-	settings->shiftUpRPM = joltSettings.mShiftUpRPM;
-	settings->shiftDownRPM = joltSettings.mShiftDownRPM;
-	settings->clutchStrength = joltSettings.mClutchStrength;
-}
-
-void JPH_VehicleTransmissionSettings_Init(JPH_VehicleTransmissionSettings* settings)
-{
-	// Copy defaults from jolt. Need to create backing memory for the arrays in this object.
 	auto joltSettings = new JPH::VehicleTransmissionSettings();
-	JPH_VehicleTransmissionSettings_FromJolt(settings, *joltSettings);
+	return reinterpret_cast<JPH_VehicleTransmissionSettings*>(joltSettings);
 }
+
+JPH_TransmissionMode JPH_VehicleTransmissionSettings_GetMode(JPH_VehicleTransmissionSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	return static_cast<JPH_TransmissionMode>(joltSettings->mMode);
+}
+
+void JPH_VehicleTransmissionSettings_SetMode(JPH_VehicleTransmissionSettings* settings, JPH_TransmissionMode mode)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mMode = static_cast<JPH::ETransmissionMode>(mode);
+}
+
+void JPH_VehicleTransmissionSettings_GetGearRatios(JPH_VehicleTransmissionSettings* settings, float** gearRatios, size_t* count)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	*count = joltSettings->mGearRatios.size();
+	*gearRatios = joltSettings->mGearRatios.data();
+}
+
+void JPH_VehicleTransmissionSettings_SetGearRatios(JPH_VehicleTransmissionSettings* settings, const float* gearRatios, size_t count)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mGearRatios.resize(count);
+	for(int i = 0; i < count; i ++){
+		joltSettings->mGearRatios[i] = gearRatios[i];
+	}
+}
+
+void JPH_VehicleTransmissionSettings_GetReverseGearRatios(JPH_VehicleTransmissionSettings* settings, float** reverseGearRatios, size_t* count)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	*count = joltSettings->mReverseGearRatios.size();
+	*reverseGearRatios = joltSettings->mReverseGearRatios.data();
+}
+
+void JPH_VehicleTransmissionSettings_SetReverseGearRatios(JPH_VehicleTransmissionSettings* settings, const float* reverseGearRatios, size_t count)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mReverseGearRatios.resize(count);
+	for(int i = 0; i < count; i ++){
+		joltSettings->mReverseGearRatios[i] = reverseGearRatios[i];
+	}
+}
+
+float JPH_VehicleTransmissionSettings_GetSwitchTime(JPH_VehicleTransmissionSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	return joltSettings->mSwitchTime;
+}
+
+void JPH_VehicleTransmissionSettings_SetSwitchTime(JPH_VehicleTransmissionSettings* settings, float switchTime)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mSwitchTime = switchTime;
+}
+
+float JPH_VehicleTransmissionSettings_GetClutchReleaseTime(JPH_VehicleTransmissionSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	return joltSettings->mClutchReleaseTime;
+}
+
+void JPH_VehicleTransmissionSettings_SetClutchReleaseTime(JPH_VehicleTransmissionSettings* settings, float clutchReleaseTime)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mClutchReleaseTime = clutchReleaseTime;
+}
+
+float JPH_VehicleTransmissionSettings_GetSwitchLatency(JPH_VehicleTransmissionSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	return joltSettings->mSwitchLatency;
+}
+
+void JPH_VehicleTransmissionSettings_SetSwitchLatency(JPH_VehicleTransmissionSettings* settings, float switchLatency)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mSwitchLatency = switchLatency;
+}
+
+float JPH_VehicleTransmissionSettings_GetShiftUpRPM(JPH_VehicleTransmissionSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	return joltSettings->mShiftUpRPM;
+}
+
+void JPH_VehicleTransmissionSettings_SetShiftUpRPM(JPH_VehicleTransmissionSettings* settings, float shiftUpRPM)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mShiftUpRPM = shiftUpRPM;
+}
+
+float JPH_VehicleTransmissionSettings_GetShiftDownRPM(JPH_VehicleTransmissionSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	return joltSettings->mShiftDownRPM;
+}
+
+void JPH_VehicleTransmissionSettings_SetShiftDownRPM(JPH_VehicleTransmissionSettings* settings, float shiftDownRPM)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mShiftDownRPM = shiftDownRPM;
+}
+
+float JPH_VehicleTransmissionSettings_GetClutchStrength(JPH_VehicleTransmissionSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	return joltSettings->mClutchStrength;
+}
+
+void JPH_VehicleTransmissionSettings_SetClutchStrength(JPH_VehicleTransmissionSettings* settings, float clutchStrength)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleTransmissionSettings*>(settings);
+	joltSettings->mClutchStrength = clutchStrength;
+}
+
+//--------------------------------------------------------------------------------------------------
+// JPH_VehicleDifferentialSettings
+//--------------------------------------------------------------------------------------------------
+
+JPH_VehicleDifferentialSettings* JPH_VehicleDifferentialSettings_Init(void)
+{
+	auto joltSettings = new JPH::VehicleDifferentialSettings();
+	return reinterpret_cast<JPH_VehicleDifferentialSettings*>(joltSettings);
+}
+
+int JPH_VehicleDifferentialSettings_GetLeftWheel(JPH_VehicleDifferentialSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	return joltSettings->mLeftWheel;
+}
+
+void JPH_VehicleDifferentialSettings_SetLeftWheel(JPH_VehicleDifferentialSettings* settings, int leftWheel)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	joltSettings->mLeftWheel = leftWheel;
+}
+
+int JPH_VehicleDifferentialSettings_GetRightWheel(JPH_VehicleDifferentialSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	return joltSettings->mRightWheel;
+}
+
+void JPH_VehicleDifferentialSettings_SetRightWheel(JPH_VehicleDifferentialSettings* settings, int rightWheel)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	joltSettings->mRightWheel = rightWheel;
+}
+
+float JPH_VehicleDifferentialSettings_GetDifferentialRatio(JPH_VehicleDifferentialSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	return joltSettings->mDifferentialRatio;
+}
+
+void JPH_VehicleDifferentialSettings_SetDifferentialRatio(JPH_VehicleDifferentialSettings* settings, float differentialRatio)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	joltSettings->mDifferentialRatio = differentialRatio;
+}
+
+float JPH_VehicleDifferentialSettings_GetLeftRightSplit(JPH_VehicleDifferentialSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	return joltSettings->mLeftRightSplit;
+}
+
+void JPH_VehicleDifferentialSettings_SetLeftRightSplit(JPH_VehicleDifferentialSettings* settings, float leftRightSplit)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	joltSettings->mLeftRightSplit = leftRightSplit;
+}
+
+float JPH_VehicleDifferentialSettings_GetLimitedSlipRatio(JPH_VehicleDifferentialSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	return joltSettings->mLimitedSlipRatio;
+}
+
+void JPH_VehicleDifferentialSettings_SetLimitedSlipRatio(JPH_VehicleDifferentialSettings* settings, float limitedSlipRatio)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	joltSettings->mLimitedSlipRatio = limitedSlipRatio;
+}
+
+float JPH_VehicleDifferentialSettings_GetEngineTorqueRatio(JPH_VehicleDifferentialSettings* settings)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	return joltSettings->mEngineTorqueRatio;
+}
+
+void JPH_VehicleDifferentialSettings_SetEngineTorqueRatio(JPH_VehicleDifferentialSettings* settings, float engineTorqueRatio)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	joltSettings->mEngineTorqueRatio = engineTorqueRatio;
+}
+
+void JPH_VehicleDifferentialSettings_CalculateTorqueRatio(JPH_VehicleDifferentialSettings* settings, float leftAngularVelocity, float rightAngularVelocity, float* leftTorqueFraction, float* rightTorqueFraction)
+{
+	auto joltSettings = reinterpret_cast<JPH::VehicleDifferentialSettings*>(settings);
+	joltSettings->CalculateTorqueRatio(leftAngularVelocity, rightAngularVelocity, *leftTorqueFraction, *rightTorqueFraction);
+}
+
 
 //--------------------------------------------------------------------------------------------------
 // JPH_VehicleConstraintSettings
@@ -8430,9 +8598,10 @@ void JPH_VehicleTransmissionSettings_Init(JPH_VehicleTransmissionSettings* setti
 
 JPH_VehicleConstraintSettings* JPH_VehicleConstraintSettings_Init(void)
 {
-	auto settings = new JPH::VehicleConstraintSettings();
-	return reinterpret_cast<JPH_VehicleConstraintSettings*>(settings);
+	auto joltSettings = new JPH::VehicleConstraintSettings();
+	return reinterpret_cast<JPH_VehicleConstraintSettings*>(joltSettings);
 }
+
 
 void JPH_VehicleConstraintSettings_GetUp(JPH_VehicleConstraintSettings* settings, JPH_Vec3* up)
 {
@@ -8473,104 +8642,118 @@ void JPH_VehicleConstraintSettings_SetMaxPitchRollAngle(JPH_VehicleConstraintSet
 void JPH_VehicleConstraintSettings_GetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t* count)
 {
 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
-	auto joltWheels = joltSettings->mWheels;
-	*count = joltWheels.size();
-	*wheels = reinterpret_cast<JPH_WheelSettings*>(joltWheels.data());
+	*count = joltSettings->mWheels.size();
+	*wheels = reinterpret_cast<JPH_WheelSettings*>(joltSettings->mWheels.data());
 }
 
 void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t count)
 {
 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
-	auto joltWheels = joltSettings->mWheels;
-	joltWheels.resize(count);
-	joltWheels[0] = reinterpret_cast<JPH::WheelSettings*>(wheels[0]);
+	joltSettings->mWheels.resize(count);
+	*joltSettings->mWheels.data() = reinterpret_cast<JPH::WheelSettings*>(wheels);
 }
+
+
+// void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar** antiRollBars, size_t* count)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+// 	auto joltAntiRollBars = joltSettings->mAntiRollBars;
+// 	*count = joltSettings->mAntiRollBars.size();
+// 	*antiRollBars = reinterpret_cast<JPH_VehicleAntiRollBar*>(joltSettings->mAntiRollBars.data());
+// }
 
 void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar* antiRollBars, size_t* count)
 {
 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
-	auto joltAntiRollBars = joltSettings->mAntiRollBars;
 	*count = joltSettings->mAntiRollBars.size();
 	for(int i = 0; i < joltSettings->mAntiRollBars.size(); i++) {
-		JPH_VehicleAntiRollBar_FromJolt(&antiRollBars[i], joltSettings->mAntiRollBars[i]);
+		// JPH_VehicleAntiRollBar_FromJolt(&antiRollBars[i], joltSettings->mAntiRollBars[i]);
+		// joltSettings->mAntiRollBars[i].mLeftWheel = antiRollBars[i].leftWheel;
+		// joltSettings->mAntiRollBars[i].mRightWheel = antiRollBars[i].rightWheel;
+		// joltSettings->mAntiRollBars[i].mStiffness = antiRollBars[i].stiffness;
+		antiRollBars[i].leftWheel = joltSettings->mAntiRollBars[i].mLeftWheel;
+		antiRollBars[i].rightWheel = joltSettings->mAntiRollBars[i].mRightWheel;
+		antiRollBars[i].stiffness = joltSettings->mAntiRollBars[i].mStiffness;
 	}
 }
+
 
 void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings* settings, const JPH_VehicleAntiRollBar* antiRollBars, size_t count)
 {
 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
 	joltSettings->mAntiRollBars.resize(count);
 	for(int i = 0; i < count; i++) {
-		JPH_VehicleAntiRollBar_ToJolt(&joltSettings->mAntiRollBars[i], &antiRollBars[i]);
+		// JPH_VehicleAntiRollBar_ToJolt(&joltSettings->mAntiRollBars[i], &antiRollBars[i]);
+		joltSettings->mAntiRollBars[i].mLeftWheel = antiRollBars[i].leftWheel;
+		joltSettings->mAntiRollBars[i].mRightWheel = antiRollBars[i].rightWheel;
+		joltSettings->mAntiRollBars[i].mStiffness = antiRollBars[i].stiffness;
 	}
 }
 
-JPH_VehicleControllerSettings* JPH_VehicleConstraintSettings_GetController(JPH_VehicleConstraintSettings* settings)
-{
-	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
-	return reinterpret_cast<JPH_VehicleControllerSettings*>(&joltSettings->mController);
-}
-
-void JPH_VehicleConstraintSettings_SetController(JPH_VehicleConstraintSettings* settings, JPH_VehicleControllerSettings* controller)
-{
-	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
-	joltSettings->mController = reinterpret_cast<JPH::VehicleControllerSettings*>(controller);
-}
+// void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar** antiRollBars, size_t count)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
+// 	joltSettings->mAntiRollBars.resize(count);
+// 	for(int i = 0; i < count; i++) {
+// 		joltSettings->mAntiRollBars[i] = *reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBars[i]);
+// 	}
+// 	// *joltSettings->mAntiRollBars.data() = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBars);
+// }
 
 //--------------------------------------------------------------------------------------------------
 // JPH_WheeledVehicleControllerSettings
 //--------------------------------------------------------------------------------------------------
 
-JPH_WheeledVehicleControllerSettings* JPH_WheeledVehicleControllerSettings_Init(void) 
-{
-	auto settings = new JPH::WheeledVehicleControllerSettings();
-	return reinterpret_cast<JPH_WheeledVehicleControllerSettings*>(settings);
-}
+// JPH_WheeledVehicleControllerSettings* JPH_WheeledVehicleControllerSettings_Init(void) 
+// {
+// 	auto settings = new JPH::WheeledVehicleControllerSettings();
+// 	return reinterpret_cast<JPH_WheeledVehicleControllerSettings*>(settings);
+// }
 
-JPH_VehicleEngineSettings* JPH_WheeledVehicleControllerSettings_GetEngine(JPH_WheeledVehicleControllerSettings* settings)
-{
-	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
-	return reinterpret_cast<JPH_VehicleEngineSettings*>(&joltSettings->mEngine);
-}
+// JPH_VehicleEngineSettings* JPH_WheeledVehicleControllerSettings_GetEngine(JPH_WheeledVehicleControllerSettings* settings)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
+// 	return reinterpret_cast<JPH_VehicleEngineSettings*>(&joltSettings->mEngine);
+// }
 
-void JPH_WheeledVehicleControllerSettings_SetEngine(JPH_WheeledVehicleControllerSettings* settings, JPH_VehicleEngineSettings* engine)
-{
-	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
-	joltSettings->mEngine = *reinterpret_cast<JPH::VehicleEngineSettings*>(engine);
-}
+// void JPH_WheeledVehicleControllerSettings_SetEngine(JPH_WheeledVehicleControllerSettings* settings, JPH_VehicleEngineSettings* engine)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
+// 	joltSettings->mEngine = *reinterpret_cast<JPH::VehicleEngineSettings*>(engine);
+// }
 
-void JPH_WheeledVehicleControllerSettings_GetTransmission(JPH_WheeledVehicleControllerSettings* settings, JPH_VehicleTransmissionSettings* transmission)
-{
-	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
-	JPH_VehicleTransmissionSettings_FromJolt(transmission, joltSettings->mTransmission);
-}
+// void JPH_WheeledVehicleControllerSettings_GetTransmission(JPH_WheeledVehicleControllerSettings* settings, JPH_VehicleTransmissionSettings* transmission)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
+// 	JPH_VehicleTransmissionSettings_FromJolt(transmission, joltSettings->mTransmission);
+// }
 
-void JPH_WheeledVehicleControllerSettings_SetTransmission(JPH_WheeledVehicleControllerSettings* settings, const JPH_VehicleTransmissionSettings* transmission)
-{
-	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
-	// joltSettings->mTransmission = *reinterpret_cast<JPH::VehicleTransmissionSettings*>(transmission);
-	JPH_VehicleTransmissionSettings_ToJolt(&joltSettings->mTransmission, transmission);
-}
+// void JPH_WheeledVehicleControllerSettings_SetTransmission(JPH_WheeledVehicleControllerSettings* settings, const JPH_VehicleTransmissionSettings* transmission)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
+// 	// joltSettings->mTransmission = *reinterpret_cast<JPH::VehicleTransmissionSettings*>(transmission);
+// 	JPH_VehicleTransmissionSettings_ToJolt(&joltSettings->mTransmission, transmission);
+// }
 
-void JPH_WheeledVehicleControllerSettings_GetDifferentials(JPH_WheeledVehicleControllerSettings* settings, JPH_VehicleDifferentialSettings* differentials, size_t* count)
-{
-	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
-	*count = joltSettings->mDifferentials.size();
-	for(int i = 0; i < joltSettings->mDifferentials.size(); i ++)
-	{
-		JPH_VehicleDifferentialSettings_FromJolt(&differentials[i], joltSettings->mDifferentials[i]);
-	}
-}
+// void JPH_WheeledVehicleControllerSettings_GetDifferentials(JPH_WheeledVehicleControllerSettings* settings, JPH_VehicleDifferentialSettings* differentials, size_t* count)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
+// 	*count = joltSettings->mDifferentials.size();
+// 	for(int i = 0; i < joltSettings->mDifferentials.size(); i ++)
+// 	{
+// 		JPH_VehicleDifferentialSettings_FromJolt(&differentials[i], joltSettings->mDifferentials[i]);
+// 	}
+// }
 
-void JPH_WheeledVehicleControllerSettings_SetDifferentials(JPH_WheeledVehicleControllerSettings* settings, const JPH_VehicleDifferentialSettings* differentials, size_t count)
-{
-	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
-	joltSettings->mDifferentials.resize(count);
-	for(int i = 0; i < count; i ++)
-	{
-		JPH_VehicleDifferentialSettings_ToJolt(&joltSettings->mDifferentials[i], &differentials[i]);
-	}
-}
+// void JPH_WheeledVehicleControllerSettings_SetDifferentials(JPH_WheeledVehicleControllerSettings* settings, const JPH_VehicleDifferentialSettings* differentials, size_t count)
+// {
+// 	auto joltSettings = reinterpret_cast<JPH::WheeledVehicleControllerSettings*>(settings);
+// 	joltSettings->mDifferentials.resize(count);
+// 	for(int i = 0; i < count; i ++)
+// 	{
+// 		JPH_VehicleDifferentialSettings_ToJolt(&joltSettings->mDifferentials[i], &differentials[i]);
+// 	}
+// }
 
 //TODO: 
 /* JPH_VehicleEngineSettings */
