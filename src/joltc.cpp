@@ -8329,53 +8329,11 @@ void JPH_VehicleAntiRollBar_FromJolt(JPH_VehicleAntiRollBar* arb, const JPH::Veh
 	arb->stiffness = joltArb.mStiffness;
 }
 
-void JPH_VehicleAntiRollBar_Default(JPH_VehicleAntiRollBar* antiRollBar)
+void JPH_VehicleAntiRollBar_Init(JPH_VehicleAntiRollBar* antiRollBar)
 {
 	JPH::VehicleAntiRollBar joltAntiRollBar;
 	JPH_VehicleAntiRollBar_FromJolt(antiRollBar, joltAntiRollBar);
 }
-
-// JPH_VehicleAntiRollBar* JPH_VehicleAntiRollBar_Init(void)
-// {
-// 	auto joltAntiRollBar = new JPH::VehicleAntiRollBar();
-// 	return reinterpret_cast<JPH_VehicleAntiRollBar*>(joltAntiRollBar);
-// }
-
-// int JPH_VehicleAntiRollBar_GetLeftWheel(JPH_VehicleAntiRollBar* antiRollBar)
-// {
-// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
-// 	return joltAntiRollBar->mLeftWheel;
-// }
-
-// void JPH_VehicleAntiRollBar_GetLeftWheel(JPH_VehicleAntiRollBar* antiRollBar, int leftWheel)
-// {
-// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
-// 	joltAntiRollBar->mLeftWheel = leftWheel;
-// }
-
-// int JPH_VehicleAntiRollBar_GetRightWheel(JPH_VehicleAntiRollBar* antiRollBar)
-// {
-// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
-// 	return joltAntiRollBar->mRightWheel;
-// }
-
-// void JPH_VehicleAntiRollBar_SetRightWheel(JPH_VehicleAntiRollBar* antiRollBar, int rightWheel)
-// {
-// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
-// 	joltAntiRollBar->mRightWheel = rightWheel;
-// }
-
-// float JPH_VehicleAntiRollBar_GetStiffness(JPH_VehicleAntiRollBar* antiRollBar)
-// {
-// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
-// 	return joltAntiRollBar->mStiffness;
-// }
-
-// void JPH_VehicleAntiRollBar_SetStiffness(JPH_VehicleAntiRollBar* antiRollBar, float stiffness)
-// {
-// 	auto joltAntiRollBar = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBar);
-// 	joltAntiRollBar->mStiffness = stiffness;
-// }
 
 //--------------------------------------------------------------------------------------------------
 // JPH_VehicleTransmissionSettings
@@ -8591,6 +8549,49 @@ void JPH_VehicleDifferentialSettings_CalculateTorqueRatio(JPH_VehicleDifferentia
 	joltSettings->CalculateTorqueRatio(leftAngularVelocity, rightAngularVelocity, *leftTorqueFraction, *rightTorqueFraction);
 }
 
+//--------------------------------------------------------------------------------------------------
+// JPH_WheelSettings
+//--------------------------------------------------------------------------------------------------
+void JPH_WheelSettings_ToJolt(JPH::WheelSettings* joltSettings, const JPH_WheelSettings* settings)
+{
+	// joltSettings->mPosition = ToJolt(settings->position);
+	// joltSettings->mSuspensionForcePoint = ToJolt(settings->suspensionForcePoint);
+	// joltSettings->mSuspensionDirection = ToJolt(settings->suspensionDirection);
+	// joltSettings->mSteeringAxis = ToJolt(settings->steeringAxis);
+	// joltSettings->mWheelUp = ToJolt(settings->wheelUp);
+	// joltSettings->mWheelForward = ToJolt(settings->wheelForward);
+	joltSettings->mSuspensionMinLength = settings->suspensionMinLength;
+	joltSettings->mSuspensionMaxLength = settings->suspensionMaxLength;
+	joltSettings->mSuspensionPreloadLength = settings->suspensionPreloadLength;
+	// joltSettings->mSuspensionSpring = ToJolt(&settings->suspensionSpring);
+	joltSettings->mRadius = settings->radius;
+	joltSettings->mWidth = settings->width;
+	joltSettings->mEnableSuspensionForcePoint = settings->enableSuspensionForcePoint;
+}
+
+void JPH_WheelSettings_FromJolt(JPH_WheelSettings* settings, const JPH::WheelSettings& joltSettings)
+{
+	FromJolt(joltSettings.mPosition, &settings->position);
+	FromJolt(joltSettings.mSuspensionForcePoint, &settings->suspensionForcePoint);
+	FromJolt(joltSettings.mSuspensionDirection, &settings->suspensionDirection);
+	FromJolt(joltSettings.mSteeringAxis, &settings->steeringAxis);
+	FromJolt(joltSettings.mWheelUp, &settings->wheelUp);
+	FromJolt(joltSettings.mWheelForward, &settings->wheelForward);
+	settings->suspensionMinLength = joltSettings.mSuspensionMinLength;
+	settings->suspensionMaxLength = joltSettings.mSuspensionMaxLength;
+	settings->suspensionPreloadLength = joltSettings.mSuspensionPreloadLength;
+	FromJolt(joltSettings.mSuspensionSpring, &settings->suspensionSpring);
+	settings->radius = joltSettings.mRadius;
+	settings->width = joltSettings.mWidth;
+	settings->enableSuspensionForcePoint = joltSettings.mEnableSuspensionForcePoint;
+}
+
+void JPH_WheelSettings_Init(JPH_WheelSettings* settings)
+{
+	auto joltSettings = new JPH::WheelSettings();
+	JPH_WheelSettings_FromJolt(settings, *joltSettings);
+}
+
 
 //--------------------------------------------------------------------------------------------------
 // JPH_VehicleConstraintSettings
@@ -8646,35 +8647,25 @@ void JPH_VehicleConstraintSettings_GetWheels(JPH_VehicleConstraintSettings* sett
 	*wheels = reinterpret_cast<JPH_WheelSettings*>(joltSettings->mWheels.data());
 }
 
-void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t count)
+void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, const JPH_WheelSettings* wheels, size_t count)
 {
 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
 	joltSettings->mWheels.resize(count);
-	*joltSettings->mWheels.data() = reinterpret_cast<JPH::WheelSettings*>(wheels);
+	for(auto i = 0; i < count; i++) {
+		auto wheel = joltSettings->mWheels.data()[i];
+		// JPH_WheelSettings_ToJolt(joltSettings->mWheels[i], &wheels[i]);
+		// auto wheel = joltSettings->mWheels[i];
+		// wheel->mRadius = 0.3;
+		wheel->mRadius = 100;
+	}
 }
 
 
-// void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar** antiRollBars, size_t* count)
-// {
-// 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
-// 	auto joltAntiRollBars = joltSettings->mAntiRollBars;
-// 	*count = joltSettings->mAntiRollBars.size();
-// 	*antiRollBars = reinterpret_cast<JPH_VehicleAntiRollBar*>(joltSettings->mAntiRollBars.data());
-// }
-
-void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar* antiRollBars, size_t* count)
+void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar** antiRollBars, size_t* count)
 {
 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
 	*count = joltSettings->mAntiRollBars.size();
-	for(int i = 0; i < joltSettings->mAntiRollBars.size(); i++) {
-		// JPH_VehicleAntiRollBar_FromJolt(&antiRollBars[i], joltSettings->mAntiRollBars[i]);
-		// joltSettings->mAntiRollBars[i].mLeftWheel = antiRollBars[i].leftWheel;
-		// joltSettings->mAntiRollBars[i].mRightWheel = antiRollBars[i].rightWheel;
-		// joltSettings->mAntiRollBars[i].mStiffness = antiRollBars[i].stiffness;
-		antiRollBars[i].leftWheel = joltSettings->mAntiRollBars[i].mLeftWheel;
-		antiRollBars[i].rightWheel = joltSettings->mAntiRollBars[i].mRightWheel;
-		antiRollBars[i].stiffness = joltSettings->mAntiRollBars[i].mStiffness;
-	}
+	*antiRollBars = reinterpret_cast<JPH_VehicleAntiRollBar*>(joltSettings->mAntiRollBars.data());
 }
 
 
@@ -8682,23 +8673,10 @@ void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings
 {
 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
 	joltSettings->mAntiRollBars.resize(count);
-	for(int i = 0; i < count; i++) {
-		// JPH_VehicleAntiRollBar_ToJolt(&joltSettings->mAntiRollBars[i], &antiRollBars[i]);
-		joltSettings->mAntiRollBars[i].mLeftWheel = antiRollBars[i].leftWheel;
-		joltSettings->mAntiRollBars[i].mRightWheel = antiRollBars[i].rightWheel;
-		joltSettings->mAntiRollBars[i].mStiffness = antiRollBars[i].stiffness;
+	for(auto i = 0; i < count; i++) {
+		JPH_VehicleAntiRollBar_ToJolt(&joltSettings->mAntiRollBars[i], &antiRollBars[i]);
 	}
 }
-
-// void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar** antiRollBars, size_t count)
-// {
-// 	auto joltSettings = reinterpret_cast<JPH::VehicleConstraintSettings*>(settings);
-// 	joltSettings->mAntiRollBars.resize(count);
-// 	for(int i = 0; i < count; i++) {
-// 		joltSettings->mAntiRollBars[i] = *reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBars[i]);
-// 	}
-// 	// *joltSettings->mAntiRollBars.data() = reinterpret_cast<JPH::VehicleAntiRollBar*>(antiRollBars);
-// }
 
 //--------------------------------------------------------------------------------------------------
 // JPH_WheeledVehicleControllerSettings

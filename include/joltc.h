@@ -940,6 +940,22 @@ typedef struct JPH_VehicleAntiRollBar {
 	float stiffness;
 } JPH_VehicleAntiRollBar;
 
+typedef struct JPH_WheelSettings {
+	JPH_Vec3 position;
+	JPH_Vec3 suspensionForcePoint;
+	JPH_Vec3 suspensionDirection;
+	JPH_Vec3 steeringAxis;
+	JPH_Vec3 wheelUp;
+	JPH_Vec3 wheelForward;
+	float suspensionMinLength;
+	float suspensionMaxLength;
+	float suspensionPreloadLength;
+	JPH_SpringSettings suspensionSpring;
+	float radius;
+	float width;
+	bool enableSuspensionForcePoint;
+} JPH_WheelSettings;
+
 typedef struct JPH_VehicleTransmissionSettings 		JPH_VehicleTransmissionSettings;
 typedef struct JPH_VehicleDifferentialSettings 		JPH_VehicleDifferentialSettings;
 typedef struct JPH_VehicleConstraintSettings 		JPH_VehicleConstraintSettings;
@@ -948,7 +964,6 @@ typedef struct JPH_VehicleControllerSettings 		JPH_VehicleControllerSettings;
 typedef struct JPH_WheeledVehicleControllerSettings JPH_WheeledVehicleControllerSettings;
 typedef struct JPH_VehicleEngineSettings 			JPH_VehicleEngineSettings;
 
-typedef struct JPH_WheelSettings 					JPH_WheelSettings;
 typedef struct JPH_WheelSettingsWV 					JPH_WheelSettingsWV;
 
 // Vehicles
@@ -2388,7 +2403,7 @@ JPH_CAPI void JPH_VehicleDifferentialSettings_SetEngineTorqueRatio(JPH_VehicleDi
 JPH_CAPI void JPH_VehicleDifferentialSettings_CalculateTorqueRatio(JPH_VehicleDifferentialSettings* settings, float leftAngularVelocity, float rightAngularVelocity, float* leftTorqueFraction, float* rightTorqueFraction);
 
 /* JPH_VehicleAntiRollBar */
-JPH_CAPI void JPH_VehicleAntiRollBar_Default(JPH_VehicleAntiRollBar* antiRollbar);
+JPH_CAPI void JPH_VehicleAntiRollBar_Init(JPH_VehicleAntiRollBar* antiRollbar);
 // JPH_CAPI JPH_VehicleAntiRollBar* JPH_VehicleAntiRollBar_Init(void);
 // JPH_CAPI int JPH_VehicleAntiRollBar_GetLeftWheel(JPH_VehicleAntiRollBar* antiRollBar);
 // JPH_CAPI void JPH_VehicleAntiRollBar_SetLeftWheel(JPH_VehicleAntiRollBar* antiRollBar, int leftWheel);
@@ -2427,8 +2442,8 @@ JPH_CAPI void JPH_VehicleConstraintSettings_SetForward(JPH_VehicleConstraintSett
 JPH_CAPI float JPH_VehicleConstraintSettings_GetMaxPitchRollAngle(JPH_VehicleConstraintSettings* settings);
 JPH_CAPI void JPH_VehicleConstraintSettings_SetMaxPitchRollAngle(JPH_VehicleConstraintSettings* settings, float maxPitchRollAngle);
 JPH_CAPI void JPH_VehicleConstraintSettings_GetWheels(JPH_VehicleConstraintSettings* settings, JPH_WheelSettings** wheels, size_t* count);
-JPH_CAPI void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, const JPH_WheelSettings** wheels, size_t count);
-JPH_CAPI void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar* antiRollBars, size_t* count); 
+JPH_CAPI void JPH_VehicleConstraintSettings_SetWheels(JPH_VehicleConstraintSettings* settings, const JPH_WheelSettings* wheels, size_t count);
+JPH_CAPI void JPH_VehicleConstraintSettings_GetAntiRollBars(JPH_VehicleConstraintSettings* settings, JPH_VehicleAntiRollBar** antiRollBars, size_t* count); 
 JPH_CAPI void JPH_VehicleConstraintSettings_SetAntiRollBars(JPH_VehicleConstraintSettings* settings, const JPH_VehicleAntiRollBar* antiRollBars, size_t count);
 JPH_CAPI void JPH_VehicleConstraintSettings_GetController(JPH_VehicleConstraintSettings* settings, JPH_VehicleController* controller); 
 JPH_CAPI void JPH_VehicleConstraintSettings_SetController(JPH_VehicleConstraintSettings* settings, const JPH_VehicleController* controller);
@@ -2458,33 +2473,33 @@ JPH_CAPI float JPH_VehicleEngineSettings_GetAngularDamping(JPH_VehicleEngineSett
 JPH_CAPI void JPH_VehicleEngineSettings_SetAngularDamping(JPH_VehicleEngineSettings* settings, float angularDamping);
 
 /* JPH_WheelSettings */
-JPH_CAPI JPH_WheelSettings* JPH_WheelSettings_Init(void);
-JPH_CAPI void JPH_WheelSettings_GetPosition(JPH_WheelSettings* settings, JPH_Vec3* position);
-JPH_CAPI void JPH_WheelSettings_SetPosition(JPH_WheelSettings* settings, const JPH_Vec3* position);
-JPH_CAPI void JPH_WheelSettings_GetSuspensionForcePoint(JPH_WheelSettings* settings, JPH_Vec3* suspensionForcePoint);
-JPH_CAPI void JPH_WheelSettings_SetSuspensionForcePoint(JPH_WheelSettings* settings, const JPH_Vec3* suspensionForcePoint);
-JPH_CAPI void JPH_WheelSettings_GetSuspensionDirection(JPH_WheelSettings* settings, JPH_Vec3* suspensionDirection);
-JPH_CAPI void JPH_WheelSettings_SetSuspensionDirection(JPH_WheelSettings* settings, const JPH_Vec3* suspensionDirection);
-JPH_CAPI void JPH_WheelSettings_GetSteeringAxis(JPH_WheelSettings* settings, JPH_Vec3* steeringAxis);
-JPH_CAPI void JPH_WheelSettings_SetSteeringAxis(JPH_WheelSettings* settings, const JPH_Vec3* steeringAxis);
-JPH_CAPI void JPH_WheelSettings_GetWheelUp(JPH_WheelSettings* settings, JPH_Vec3* wheelUp);
-JPH_CAPI void JPH_WheelSettings_SetWheelUp(JPH_WheelSettings* settings, const JPH_Vec3* wheelUp);
-JPH_CAPI void JPH_WheelSettings_GetWheelForward(JPH_WheelSettings* settings, JPH_Vec3* wheelForward);
-JPH_CAPI void JPH_WheelSettings_SetWheelForward(JPH_WheelSettings* settings, const JPH_Vec3* wheelForward);
-JPH_CAPI float JPH_WheelSettings_GetSuspensionMinLength(JPH_WheelSettings* settings);
-JPH_CAPI void JPH_WheelSettings_SetSuspensionMinLength(JPH_WheelSettings* settings, float suspensionMinLength);
-JPH_CAPI float JPH_WheelSettings_GetSuspensionMaxLength(JPH_WheelSettings* settings);
-JPH_CAPI void JPH_WheelSettings_SetSuspensionMaxLength(JPH_WheelSettings* settings, float suspensionMaxLength);
-JPH_CAPI float JPH_WheelSettings_GetSuspensionPreloadLength(JPH_WheelSettings* settings);
-JPH_CAPI void JPH_WheelSettings_SetSuspensionPreloadLength(JPH_WheelSettings* settings, float suspensionPreloadLength);
-JPH_CAPI JPH_SpringSettings JPH_WheelSettings_GetSpringSettings(JPH_WheelSettings* settings);
-JPH_CAPI void JPH_WheelSettings_SetSpringSettings(JPH_WheelSettings* settings, JPH_SpringSettings springSettings);
-JPH_CAPI float JPH_WheelSettings_GetRadius(JPH_WheelSettings* settings);
-JPH_CAPI void JPH_WheelSettings_SetRadius(JPH_WheelSettings* settings, float radius);
-JPH_CAPI float JPH_WheelSettings_GetWidth(JPH_WheelSettings* settings);
-JPH_CAPI void JPH_WheelSettings_SetWidth(JPH_WheelSettings* settings, float width);
-JPH_CAPI bool JPH_WheelSettings_GetEnableSuspensionForcePoint(JPH_WheelSettings* settings);
-JPH_CAPI void JPH_WheelSettings_SetEnableSuspensionForcePoint(JPH_WheelSettings* settings, bool enableSuspensionForcePoint);
+JPH_CAPI void JPH_WheelSettings_Init(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_GetPosition(JPH_WheelSettings* settings, JPH_Vec3* position);
+// JPH_CAPI void JPH_WheelSettings_SetPosition(JPH_WheelSettings* settings, const JPH_Vec3* position);
+// JPH_CAPI void JPH_WheelSettings_GetSuspensionForcePoint(JPH_WheelSettings* settings, JPH_Vec3* suspensionForcePoint);
+// JPH_CAPI void JPH_WheelSettings_SetSuspensionForcePoint(JPH_WheelSettings* settings, const JPH_Vec3* suspensionForcePoint);
+// JPH_CAPI void JPH_WheelSettings_GetSuspensionDirection(JPH_WheelSettings* settings, JPH_Vec3* suspensionDirection);
+// JPH_CAPI void JPH_WheelSettings_SetSuspensionDirection(JPH_WheelSettings* settings, const JPH_Vec3* suspensionDirection);
+// JPH_CAPI void JPH_WheelSettings_GetSteeringAxis(JPH_WheelSettings* settings, JPH_Vec3* steeringAxis);
+// JPH_CAPI void JPH_WheelSettings_SetSteeringAxis(JPH_WheelSettings* settings, const JPH_Vec3* steeringAxis);
+// JPH_CAPI void JPH_WheelSettings_GetWheelUp(JPH_WheelSettings* settings, JPH_Vec3* wheelUp);
+// JPH_CAPI void JPH_WheelSettings_SetWheelUp(JPH_WheelSettings* settings, const JPH_Vec3* wheelUp);
+// JPH_CAPI void JPH_WheelSettings_GetWheelForward(JPH_WheelSettings* settings, JPH_Vec3* wheelForward);
+// JPH_CAPI void JPH_WheelSettings_SetWheelForward(JPH_WheelSettings* settings, const JPH_Vec3* wheelForward);
+// JPH_CAPI float JPH_WheelSettings_GetSuspensionMinLength(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_SetSuspensionMinLength(JPH_WheelSettings* settings, float suspensionMinLength);
+// JPH_CAPI float JPH_WheelSettings_GetSuspensionMaxLength(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_SetSuspensionMaxLength(JPH_WheelSettings* settings, float suspensionMaxLength);
+// JPH_CAPI float JPH_WheelSettings_GetSuspensionPreloadLength(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_SetSuspensionPreloadLength(JPH_WheelSettings* settings, float suspensionPreloadLength);
+// JPH_CAPI JPH_SpringSettings JPH_WheelSettings_GetSpringSettings(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_SetSpringSettings(JPH_WheelSettings* settings, JPH_SpringSettings springSettings);
+// JPH_CAPI float JPH_WheelSettings_GetRadius(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_SetRadius(JPH_WheelSettings* settings, float radius);
+// JPH_CAPI float JPH_WheelSettings_GetWidth(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_SetWidth(JPH_WheelSettings* settings, float width);
+// JPH_CAPI bool JPH_WheelSettings_GetEnableSuspensionForcePoint(JPH_WheelSettings* settings);
+// JPH_CAPI void JPH_WheelSettings_SetEnableSuspensionForcePoint(JPH_WheelSettings* settings, bool enableSuspensionForcePoint);
 
 /* JPH_WheelSettingsWV */
 JPH_CAPI JPH_WheelSettingsWV* JPH_WheelSettingsWV_Init(void);
