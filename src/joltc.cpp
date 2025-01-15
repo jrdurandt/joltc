@@ -8406,9 +8406,9 @@ void JPH_VehicleTransmissionSettings_FromJolt(JPH_VehicleTransmissionSettings* s
 
 	settings->mode = static_cast<JPH_TransmissionMode>(joltSettings.mMode);
 	settings->gearRatioCount = joltSettings.mGearRatios.size();
-	settings->gearRatios[0] = joltSettings.mGearRatios[0];
+	settings->gearRatios = (float*)joltSettings.mGearRatios.data();
 	settings->reverseGearRatioCount = joltSettings.mReverseGearRatios.size();
-	settings->reverseGearRatios[0] = joltSettings.mReverseGearRatios[0];
+	settings->reverseGearRatios = (float*)joltSettings.mReverseGearRatios.data();
 	settings->switchTime = joltSettings.mSwitchTime;
 	settings->clutchReleaseTime = joltSettings.mClutchReleaseTime;
 	settings->switchLatency = joltSettings.mSwitchLatency;
@@ -8419,8 +8419,9 @@ void JPH_VehicleTransmissionSettings_FromJolt(JPH_VehicleTransmissionSettings* s
 
 void JPH_VehicleTransmissionSettings_Init(JPH_VehicleTransmissionSettings* settings)
 {
-	JPH::VehicleTransmissionSettings joltSettings;
-	JPH_VehicleTransmissionSettings_FromJolt(settings, joltSettings);
+	// Copy defaults from jolt. Need to create backing memory for the arrays in this object.
+	auto joltSettings = new JPH::VehicleTransmissionSettings();
+	JPH_VehicleTransmissionSettings_FromJolt(settings, *joltSettings);
 }
 
 //--------------------------------------------------------------------------------------------------

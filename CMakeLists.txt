@@ -344,9 +344,9 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/joltc.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Jolt
 )
  
-if (JPH_SAMPLES)
-	add_subdirectory(samples)
-endif ()
+# if (JPH_SAMPLES)
+# 	add_subdirectory(samples)
+# endif ()
 
 if (JPH_BUILD_SHARED)
 	message(STATUS "  Library         SHARED")
@@ -354,7 +354,7 @@ else ()
   	message(STATUS "  Library         STATIC")
 endif ()
 
-message(STATUS "  Samples         ${JPH_SAMPLES}")
+# message(STATUS "  Samples         ${JPH_SAMPLES}")
 
 if (CMAKE_GENERATOR_PLATFORM)
     message(STATUS "CMAKE_GENERATOR_PLATFORM: ${CMAKE_GENERATOR_PLATFORM}")
