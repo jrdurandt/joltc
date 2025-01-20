@@ -267,3 +267,6 @@ artifacts/
 artifacts-*/
 
 build/*
+
+.idea/
+cmake-build-debug/

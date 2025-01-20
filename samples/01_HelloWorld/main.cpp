@@ -7,6 +7,7 @@
 #include <string.h> // memset
 // STL includes
 #include <iostream>
+#include <cassert>
 
 static void TraceImpl(const char* message)
 {
@@ -133,6 +134,27 @@ int main(void)
 	// You should definitely not call this every frame or when e.g. streaming in a new level section as it is an expensive operation.
 	// Instead insert all new objects in batches instead of 1 at a time to keep the broad phase efficient.
 	JPH_PhysicsSystem_OptimizeBroadPhase(system);
+
+	//Testing Linear Curve
+	auto lc = JPH_LinearCurve_Create();
+	JPH_LinearCurve_Reserve(lc, 4);
+
+	auto p0 = JPH_Point{ 3.0f, 2.0f };
+	auto p1 = JPH_Point{ 2.0f, 4.0f };
+	auto p2 = JPH_Point{ 1.0f, 6.0f };
+	auto p3 = JPH_Point{ 0.0f, 8.0f };
+	JPH_Point ps[4] = {p0, p1, p2, p3};
+	JPH_LinearCurve_SetPoints(lc, ps, 4);
+	JPH_LinearCurve_Sort(lc);
+
+	auto minX = JPH_LinearCurve_GetMinX(lc);
+	assert(minX == 0.0f && "Min X incorrect");
+	auto maxX = JPH_LinearCurve_GetMaxX(lc);
+	assert(maxX == 3.0f && "Max X incorrect");
+	auto val = JPH_LinearCurve_GetValue(lc, 2);
+	assert(val == 4 && "Val incorrect");
+
+
 
 	// Now we're ready to simulate the body, keep simulating until it goes to sleep
 	uint32_t step = 0;

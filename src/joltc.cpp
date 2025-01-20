@@ -66,6 +66,7 @@ JPH_SUPPRESS_WARNINGS
 #include "Jolt/Physics/Character/CharacterVirtual.h"
 #include "Jolt/Physics/Collision/PhysicsMaterialSimple.h"
 #include "Jolt/Physics/Body/BodyLockMulti.h"
+#include "Jolt/Core/LinearCurve.h"
 
 #include <iostream>
 #include <cstdarg>
@@ -8211,5 +8212,67 @@ void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH
 	reinterpret_cast<DebugRenderer*>(renderer)->DrawWireUnitSphere(ToJolt(matrix), JPH::Color(color), level);
 }
 #endif
+
+//--------------------------------------------------------------------------------------------------
+// JPH_LinearCurve
+//--------------------------------------------------------------------------------------------------
+
+JPH_LinearCurve * JPH_LinearCurve_Create() {
+	const auto curve = new LinearCurve();
+	return reinterpret_cast<JPH_LinearCurve *>(curve);
+}
+
+void JPH_LinearCurve_SetPoints(JPH_LinearCurve *curve, const JPH_Point *points, const size_t count) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	joltCurve->mPoints.resize(count);
+	for (auto i = 0; i < count; i ++) {
+		joltCurve->mPoints[i].mX = points[i].x;
+		joltCurve->mPoints[i].mY = points[i].y;
+	}
+}
+
+void JPH_LinearCurve_GetPoints(JPH_LinearCurve *curve, JPH_Point *points, size_t *count) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	*count = joltCurve->mPoints.size();
+	for (auto i = 0; i < joltCurve->mPoints.size(); i ++) {
+		points[i].x = joltCurve->mPoints[i].mX;
+		points[i].y = joltCurve->mPoints[i].mY;
+	}
+}
+
+void JPH_LinearCurve_Clear(JPH_LinearCurve *curve) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	joltCurve->Clear();
+}
+
+void JPH_LinearCurve_Reserve(JPH_LinearCurve *curve, uint32_t numPoints) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	joltCurve->Reserve(numPoints);
+}
+
+void JPH_LinearCurve_AddPoint(JPH_LinearCurve *curve, float x, float y) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	joltCurve->AddPoint(x, y);
+}
+
+void JPH_LinearCurve_Sort(JPH_LinearCurve *curve) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	joltCurve->Sort();
+}
+
+float JPH_LinearCurve_GetMinX(JPH_LinearCurve *curve) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	return joltCurve->GetMinX();
+}
+
+float JPH_LinearCurve_GetMaxX(JPH_LinearCurve *curve) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	return joltCurve->GetMaxX();
+}
+
+float JPH_LinearCurve_GetValue(JPH_LinearCurve *curve, const float x) {
+	const auto joltCurve = reinterpret_cast<LinearCurve*>(curve);
+	return joltCurve->GetValue(x);
+}
 
 JPH_SUPPRESS_WARNING_POP

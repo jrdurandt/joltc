@@ -2306,4 +2306,22 @@ JPH_CAPI void JPH_DebugRenderer_DrawWireTriangle(JPH_DebugRenderer* renderer, co
 JPH_CAPI void JPH_DebugRenderer_DrawWireSphere(JPH_DebugRenderer* renderer, const JPH_RVec3* center, float radius, JPH_Color color, int level);
 JPH_CAPI void JPH_DebugRenderer_DrawWireUnitSphere(JPH_DebugRenderer* renderer, const JPH_RMatrix4x4* matrix, JPH_Color color, int level);
 
+typedef struct JPH_LinearCurve JPH_LinearCurve;
+
+typedef struct JPH_Point {
+	float x;
+	float y;
+} JPH_Point;
+
+JPH_CAPI JPH_LinearCurve* JPH_LinearCurve_Create();
+JPH_CAPI void JPH_LinearCurve_SetPoints(JPH_LinearCurve* curve, const JPH_Point* points, size_t count);
+JPH_CAPI void JPH_LinearCurve_GetPoints(JPH_LinearCurve* curve, JPH_Point* points, size_t* count);
+JPH_CAPI void JPH_LinearCurve_Clear(JPH_LinearCurve* curve);
+JPH_CAPI void JPH_LinearCurve_Reserve(JPH_LinearCurve* curve, uint32_t numPoints);
+JPH_CAPI void JPH_LinearCurve_AddPoint(JPH_LinearCurve* curve, float x, float y);
+JPH_CAPI void JPH_LinearCurve_Sort(JPH_LinearCurve* curve);
+JPH_CAPI float JPH_LinearCurve_GetMinX(JPH_LinearCurve* curve);
+JPH_CAPI float JPH_LinearCurve_GetMaxX(JPH_LinearCurve* curve);
+JPH_CAPI float JPH_LinearCurve_GetValue(JPH_LinearCurve* curve, float x);
+
 #endif /* JOLT_C_H_ */
