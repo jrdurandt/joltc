@@ -270,3 +270,6 @@ build/*
 
 .zig-cache/
 zig-out/
+Zig.iml
+cmake-build-debug
+.idea
