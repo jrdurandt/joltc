@@ -37,27 +37,18 @@ pub fn build(b: *std.Build) !void {
         ) orelse true,
     };
 
-    const joltc_lib_mod = b.addModule("joltc", .{
+    //---------- Jolt Physics (JPH) ----------//
+    const jph_lib_mod = b.createModule(.{
         .target = target,
         .optimize = optimize,
-        .link_libc = true,
+        .link_libcpp = true,
         .pic = true,
     });
 
-    if (target.result.os.tag == .windows and options.shared) {
-        joltc_lib_mod.addCMacro("JPC_API", "extern __declspec(dllexport)");
-    }
-
-    if (target.result.abi != .msvc) {
-        joltc_lib_mod.link_libcpp = true;
-    } else {
-        joltc_lib_mod.linkSystemLibrary("advapi32", .{ .needed = true });
-    }
-
-    const joltc_lib = b.addLibrary(.{
-        .name = "joltc",
-        .root_module = joltc_lib_mod,
-        .linkage = if (options.shared) .dynamic else .static,
+    const jph_lib = b.addLibrary(.{
+        .name = "Jolt",
+        .root_module = jph_lib_mod,
+        .linkage = .static,
     });
 
     const flags = &.{
@@ -72,12 +63,9 @@ pub fn build(b: *std.Build) !void {
         "-fno-sanitize=undefined",
     };
 
-    //---------- Jolt Physics (JPH) ----------//
     const jph_dep = b.dependency("JoltPhysics", .{});
-    joltc_lib.addIncludePath(jph_dep.path("."));
+    jph_lib.addIncludePath(jph_dep.path("."));
 
-    //Walk the JPH source directory and add cpp files
-    //Would be better to add the sources explicitly?
     var jph_src_dir = try std.fs.openDirAbsolute(
         jph_dep.path("Jolt").getPath(b),
         .{ .iterate = true },
@@ -107,13 +95,39 @@ pub fn build(b: *std.Build) !void {
         }
     }
 
-    joltc_lib.addCSourceFiles(.{
+    jph_lib.addCSourceFiles(.{
         .root = jph_dep.path("Jolt"),
         .files = jph_src_files.items,
         .flags = flags,
     });
+    b.installArtifact(jph_lib);
 
     //---------- JoltC ----------//
+    const joltc_lib_mod = b.addModule("joltc", .{
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+        .link_libcpp = true,
+        .pic = true,
+    });
+
+    if (target.result.os.tag == .windows and options.shared) {
+        joltc_lib_mod.addCMacro("JPC_API", "extern __declspec(dllexport)");
+    }
+
+    if (target.result.abi != .msvc) {
+        joltc_lib_mod.link_libcpp = true;
+    } else {
+        joltc_lib_mod.linkSystemLibrary("advapi32", .{ .needed = true });
+    }
+
+    const joltc_lib = b.addLibrary(.{
+        .name = "joltc",
+        .root_module = joltc_lib_mod,
+        .linkage = if (options.shared) .dynamic else .static,
+    });
+
+    joltc_lib.addIncludePath(jph_dep.path("."));
     joltc_lib.addIncludePath(b.path("include"));
     joltc_lib.installHeadersDirectory(
         b.path("include"),
@@ -130,6 +144,7 @@ pub fn build(b: *std.Build) !void {
         },
         .flags = flags,
     });
+    joltc_lib.linkLibrary(jph_lib);
     b.installArtifact(joltc_lib);
 
     //Run test
