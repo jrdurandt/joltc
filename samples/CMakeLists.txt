@@ -23,7 +23,7 @@ function(add_sample SAMPLE_NAME)
 
 	if (MSVC)
 		target_link_options(${SAMPLE_NAME} PUBLIC "/SUBSYSTEM:CONSOLE")
-	endif()
+    endif()
 
     set_target_properties(${SAMPLE_NAME} PROPERTIES 
         VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${SAMPLE_NAME}>"
