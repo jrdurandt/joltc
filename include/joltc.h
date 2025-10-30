@@ -2600,6 +2600,7 @@ typedef struct JPH_Wheel								JPH_Wheel;
 typedef struct JPH_WheelWV								JPH_WheelWV;			/* Inherits JPH_Wheel */
 typedef struct JPH_WheelTV								JPH_WheelTV;			/* Inherits JPH_Wheel */
 
+typedef struct JPH_VehicleEngineSettings				JPH_VehicleEngineSettings;
 typedef struct JPH_VehicleTransmissionSettings			JPH_VehicleTransmissionSettings;
 typedef struct JPH_VehicleCollisionTester				JPH_VehicleCollisionTester;
 typedef struct JPH_VehicleCollisionTesterRay			JPH_VehicleCollisionTesterRay;			/* Inherits JPH_VehicleCollisionTester */
@@ -2637,14 +2638,6 @@ typedef struct JPH_VehicleConstraintSettings {
 	JPH_VehicleControllerSettings*	controller;
 } JPH_VehicleConstraintSettings;
 
-typedef struct JPH_VehicleEngineSettings {
-	float					maxTorque;
-	float					minRPM;
-	float					maxRPM;
-	// LinearCurve 	    normalizedTorque;
-	float					inertia;
-	float					angularDamping;
-} JPH_VehicleEngineSettings;
 
 typedef struct JPH_VehicleDifferentialSettings {
 	int		leftWheel;
@@ -2737,7 +2730,21 @@ JPH_CAPI bool JPH_Wheel_HasHitHardPoint(const JPH_Wheel* wheel);
 JPH_CAPI void JPH_VehicleAntiRollBar_Init(JPH_VehicleAntiRollBar* antiRollBar);
 
 /* VehicleEngine */
-JPH_CAPI void JPH_VehicleEngineSettings_Init(JPH_VehicleEngineSettings* settings);
+// JPH_CAPI void JPH_VehicleEngineSettings_Init(JPH_VehicleEngineSettings* settings);
+JPH_CAPI JPH_VehicleEngineSettings* JPH_VehicleEngineSettings_Create();
+JPH_CAPI void JPH_VehicleEngineSettings_Destroy(JPH_VehicleEngineSettings* settings);
+JPH_CAPI float JPH_VehicleEngineSettings_GetMaxTorque(const JPH_VehicleEngineSettings* settings);
+JPH_CAPI void JPH_VehicleEngineSettings_SetMaxTorque(JPH_VehicleEngineSettings* settings, float value);
+JPH_CAPI float JPH_VehicleEngineSettings_GetMinRPM(const JPH_VehicleEngineSettings* settings);
+JPH_CAPI void JPH_VehicleEngineSettings_SetMinRPM(JPH_VehicleEngineSettings* settings, float value);
+JPH_CAPI float JPH_VehicleEngineSettings_GetMaxRPM(const JPH_VehicleEngineSettings* settings);
+JPH_CAPI void JPH_VehicleEngineSettings_SetMaxRPM(JPH_VehicleEngineSettings* settings, float value);
+JPH_CAPI float JPH_VehicleEngineSettings_GetInertia(const JPH_VehicleEngineSettings* settings);
+JPH_CAPI void JPH_VehicleEngineSettings_SetInertia(JPH_VehicleEngineSettings* settings, float value);
+JPH_CAPI float JPH_VehicleEngineSettings_GetAngularDamping(const JPH_VehicleEngineSettings* settings);
+JPH_CAPI void JPH_VehicleEngineSettings_SetAngularDamping(JPH_VehicleEngineSettings* settings, float value);
+JPH_CAPI JPH_LinearCurve* JPH_VehicleEngineSettings_GetNormalizedTorque(const JPH_VehicleEngineSettings* settings);
+JPH_CAPI void JPH_VehicleEngineSettings_SetLinearCurve(JPH_VehicleEngineSettings* settings, JPH_LinearCurve* value);
 
 /* VehicleDifferentialSettings */
 JPH_CAPI void JPH_VehicleDifferentialSettings_Init(JPH_VehicleDifferentialSettings* settings);
