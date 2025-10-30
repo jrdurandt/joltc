@@ -9611,6 +9611,16 @@ void JPH_VehicleEngineSettings_SetMinRPM(JPH_VehicleEngineSettings* settings, fl
 	AsVehicleEngineSettings(settings)->mMinRPM = value;
 }
 
+float JPH_VehicleEngineSettings_GetMaxRPM(const JPH_VehicleEngineSettings* settings)
+{
+	return AsVehicleEngineSettings(settings)->mMaxRPM;
+}
+
+void JPH_VehicleEngineSettings_SetMaxRPM(JPH_VehicleEngineSettings* settings, float value)
+{
+	AsVehicleEngineSettings(settings)->mMaxRPM = value;
+}
+
 float JPH_VehicleEngineSettings_GetInertia(const JPH_VehicleEngineSettings* settings)
 {
 	return AsVehicleEngineSettings(settings)->mInertia;
