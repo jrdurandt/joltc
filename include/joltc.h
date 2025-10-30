@@ -2744,7 +2744,7 @@ JPH_CAPI void JPH_VehicleEngineSettings_SetInertia(JPH_VehicleEngineSettings* se
 JPH_CAPI float JPH_VehicleEngineSettings_GetAngularDamping(const JPH_VehicleEngineSettings* settings);
 JPH_CAPI void JPH_VehicleEngineSettings_SetAngularDamping(JPH_VehicleEngineSettings* settings, float value);
 JPH_CAPI JPH_LinearCurve* JPH_VehicleEngineSettings_GetNormalizedTorque(const JPH_VehicleEngineSettings* settings);
-JPH_CAPI void JPH_VehicleEngineSettings_SetLinearCurve(JPH_VehicleEngineSettings* settings, JPH_LinearCurve* value);
+JPH_CAPI void JPH_VehicleEngineSettings_SetNormalizedTorque(JPH_VehicleEngineSettings* settings, JPH_LinearCurve* value);
 
 /* VehicleDifferentialSettings */
 JPH_CAPI void JPH_VehicleDifferentialSettings_Init(JPH_VehicleDifferentialSettings* settings);
