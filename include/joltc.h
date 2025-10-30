@@ -1036,7 +1036,7 @@ JPH_CAPI JPH_ObjectVsBroadPhaseLayerFilter* JPH_ObjectVsBroadPhaseLayerFilterTab
 
 JPH_CAPI void JPH_DrawSettings_InitDefault(JPH_DrawSettings* settings);
 
-typedef void JPH_TireMaxImpulseCallback(uint32_t wheelIndex, float *longitudinalImpulse, float *lateralImpulse, float suspensionImpulse, float longitudinalFriction, float lateralFriction, float longitudinalSlip, float lateralSlip, float deltaTime);
+typedef void JPH_TireMaxImpulseCallback(uint32_t wheelIndex, float &longitudinalImpulse, float &lateralImpulse, float suspensionImpulse, float longitudinalFriction, float lateralFriction, float longitudinalSlip, float lateralSlip, float deltaTime);
 
 /* JPH_PhysicsSystem */
 typedef struct JPH_PhysicsSystemSettings {

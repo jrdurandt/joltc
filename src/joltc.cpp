@@ -10317,8 +10317,8 @@ float JPH_WheeledVehicleController_GetWheelSpeedAtClutch(const JPH_WheeledVehicl
 }
 
 void JPH_WheeledVehicleController_SetTireMaxImpulseCallback(JPH_WheeledVehicleController* controller, JPH_TireMaxImpulseCallback* callback)  {
-	const WheeledVehicleController::TireMaxImpulseCallback joltTireMaxImpulseCallback([callback](unsigned wheelIndex, float & outLongitudinalImpulse, float & outLateralImpulse, float inSuspensionImpulse, float inLongitudinalFriction, float inLateralFriction, float inLongitudinalSlip, float inLateralSlip, float deltaTime) {
-		callback(wheelIndex, &outLongitudinalImpulse, &outLateralImpulse, inSuspensionImpulse, inLongitudinalFriction, inLateralFriction, inLongitudinalSlip, inLateralSlip, deltaTime);
+	const WheeledVehicleController::TireMaxImpulseCallback joltTireMaxImpulseCallback([callback](unsigned wheelIndex, float &outLongitudinalImpulse, float &outLateralImpulse, float inSuspensionImpulse, float inLongitudinalFriction, float inLateralFriction, float inLongitudinalSlip, float inLateralSlip, float deltaTime) {
+		callback(wheelIndex, outLongitudinalImpulse, outLateralImpulse, inSuspensionImpulse, inLongitudinalFriction, inLateralFriction, inLongitudinalSlip, inLateralSlip, deltaTime);
 	});
 	AsWheeledVehicleController(controller)->SetTireMaxImpulseCallback(joltTireMaxImpulseCallback);
 }
