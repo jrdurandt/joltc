@@ -10316,10 +10316,6 @@ float JPH_WheeledVehicleController_GetWheelSpeedAtClutch(const JPH_WheeledVehicl
 	return AsWheeledVehicleController(controller)->GetWheelSpeedAtClutch();
 }
 
-void JPH_WheeledVehicleController_SetTireMaxImpulseCallback(JPH_WheeledVehicleController* controller, JPH_TireMaxImpulseCallback callback)  {
-	AsWheeledVehicleController(controller)->SetTireMaxImpulseCallback(callback);
-}
-
 /* WheelSettingsTV - WheelTV - TrackedVehicleController */
 JPH_WheelSettingsTV* JPH_WheelSettingsTV_Create(void)
 {

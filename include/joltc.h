@@ -1036,9 +1036,6 @@ JPH_CAPI JPH_ObjectVsBroadPhaseLayerFilter* JPH_ObjectVsBroadPhaseLayerFilterTab
 
 JPH_CAPI void JPH_DrawSettings_InitDefault(JPH_DrawSettings* settings);
 
-// Params: (uint32_t wheelIndex, float &longitudinalImpulse, float &lateralImpulse, float suspensionImpulse, float longitudinalFriction, float lateralFriction, float longitudinalSlip, float lateralSlip, float deltaTime);
-typedef void (*JPH_TireMaxImpulseCallback)(uint32_t ,float& ,float& ,float ,float ,float ,float ,float ,float );
-
 /* JPH_PhysicsSystem */
 typedef struct JPH_PhysicsSystemSettings {
 	uint32_t maxBodies; /* 10240 */
@@ -2845,7 +2842,6 @@ JPH_CAPI float JPH_WheeledVehicleController_GetBrakeInput(const JPH_WheeledVehic
 JPH_CAPI void JPH_WheeledVehicleController_SetHandBrakeInput(JPH_WheeledVehicleController* controller, float handBrakeInput);
 JPH_CAPI float JPH_WheeledVehicleController_GetHandBrakeInput(const JPH_WheeledVehicleController* controller);
 JPH_CAPI float JPH_WheeledVehicleController_GetWheelSpeedAtClutch(const JPH_WheeledVehicleController* controller);
-JPH_CAPI void JPH_WheeledVehicleController_SetTireMaxImpulseCallback(JPH_WheeledVehicleController* controller, JPH_TireMaxImpulseCallback callback);
 
 /* WheelSettingsTV - WheelTV - TrackedVehicleController */
 /* TODO: Add VehicleTrack and VehicleTrackSettings */
