@@ -10331,8 +10331,8 @@ void JPH_WheeledVehicleController_SetTireMaxImpulseCallback(JPH_WheeledVehicleCo
 	// 	float deltaTime) {
 	// 	callback(
 	// 		static_cast<uint32_t>(wheelIndex),
-	// 		outLongitudinalImpulse,
-	// 		outLateralImpulse,
+	// 		&outLongitudinalImpulse,
+	// 		&outLateralImpulse,
 	// 		inSuspensionImpulse,
 	// 		inLongitudinalFriction,
 	// 		inLateralFriction,
