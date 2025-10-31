@@ -18,10 +18,10 @@ namespace BroadPhaseLayers {
     static constexpr uint32_t NUM_LAYERS(2);
 }
 
-void tireMaxImpulseCallback(uint32_t index, float& longI, float& latI, float susI, float longF, float latF, float longS, float latS, float dt) {
+void tireMaxImpulseCallback(uint32_t index, float* longI, float* latI, float susI, float longF, float latF, float longS, float latS, float dt) {
     std::cout << "Called:" << index << std::endl;
-    longI = 10.0f * longF * susI;
-    latI = latF * susI;
+    *longI = 10.0f * longF * susI;
+    *latI = latF * susI;
 }
 
 int main(void) {
