@@ -2734,7 +2734,7 @@ JPH_CAPI bool JPH_Wheel_HasHitHardPoint(const JPH_Wheel* wheel);
 /* VehicleAntiRollBar */
 JPH_CAPI void JPH_VehicleAntiRollBar_Init(JPH_VehicleAntiRollBar* antiRollBar);
 
-/* VehicleEngine */
+/* VehicleEngineSettings */
 JPH_CAPI JPH_VehicleEngineSettings* JPH_VehicleEngineSettings_Create();
 JPH_CAPI void JPH_VehicleEngineSettings_Destroy(JPH_VehicleEngineSettings* settings);
 JPH_CAPI float JPH_VehicleEngineSettings_GetMaxTorque(const JPH_VehicleEngineSettings* settings);
@@ -2750,6 +2750,7 @@ JPH_CAPI void JPH_VehicleEngineSettings_SetAngularDamping(JPH_VehicleEngineSetti
 JPH_CAPI JPH_LinearCurve* JPH_VehicleEngineSettings_GetNormalizedTorque(const JPH_VehicleEngineSettings* settings);
 JPH_CAPI void JPH_VehicleEngineSettings_SetNormalizedTorque(JPH_VehicleEngineSettings* settings, JPH_LinearCurve* value);
 
+/* VehicleEngine */
 JPH_CAPI void JPH_VehicleEngine_ClampRPM(JPH_VehicleEngine* engine);
 JPH_CAPI float JPH_VehicleEngine_GetCurrentRPM(const JPH_VehicleEngine* engine);
 JPH_CAPI void JPH_VehicleEngine_SetCurrentRPM(JPH_VehicleEngine* engine, float rpm);
@@ -2762,7 +2763,7 @@ JPH_CAPI bool JPH_VehicleEngine_AllowSleep(const JPH_VehicleEngine* engine);
 /* VehicleDifferentialSettings */
 JPH_CAPI void JPH_VehicleDifferentialSettings_Init(JPH_VehicleDifferentialSettings* settings);
 
-/* VehicleTransmission */
+/* VehicleTransmissionSettings */
 JPH_CAPI JPH_VehicleTransmissionSettings* JPH_VehicleTransmissionSettings_Create(void);
 JPH_CAPI void JPH_VehicleTransmissionSettings_Destroy(JPH_VehicleTransmissionSettings* settings);
 
@@ -2895,6 +2896,8 @@ JPH_CAPI float JPH_TrackedVehicleController_GetRightRatio(const JPH_TrackedVehic
 JPH_CAPI void JPH_TrackedVehicleController_SetRightRatio(JPH_TrackedVehicleController* controller, float value);
 JPH_CAPI float JPH_TrackedVehicleController_GetBrakeInput(const JPH_TrackedVehicleController* controller);
 JPH_CAPI void JPH_TrackedVehicleController_SetBrakeInput(JPH_TrackedVehicleController* controller, float value);
+JPH_CAPI JPH_VehicleEngine* JPH_TrackedVehicleController_GetEngine(JPH_TrackedVehicleController* controller);
+JPH_CAPI JPH_VehicleTransmission* JPH_TrackedVehicleController_GetTransmission(JPH_TrackedVehicleController* controller);
 
 /* MotorcycleController */
 JPH_CAPI JPH_MotorcycleControllerSettings* JPH_MotorcycleControllerSettings_Create(void);
@@ -2926,6 +2929,8 @@ JPH_CAPI float JPH_MotorcycleController_GetLeanSpringIntegrationCoefficientDecay
 JPH_CAPI void JPH_MotorcycleController_SetLeanSpringIntegrationCoefficientDecay(JPH_MotorcycleController* controller, float value);
 JPH_CAPI float JPH_MotorcycleController_GetLeanSmoothingFactor(const JPH_MotorcycleController* controller);
 JPH_CAPI void JPH_MotorcycleController_SetLeanSmoothingFactor(JPH_MotorcycleController* controller, float value);
+JPH_CAPI JPH_VehicleEngine* JPH_MotorcycleController_GetEngine(JPH_MotorcycleController* controller);
+JPH_CAPI JPH_VehicleTransmission* JPH_MotorcycleController_GetTransmission(JPH_MotorcycleController* controller);
 
 /* LinearCurve */
 JPH_CAPI JPH_LinearCurve* JPH_LinearCurve_Create(void);

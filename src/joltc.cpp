@@ -9567,7 +9567,6 @@ bool JPH_Wheel_HasHitHardPoint(const JPH_Wheel* wheel)
 	return AsWheel(wheel)->HasHitHardPoint();
 }
 
-
 /* VehicleAntiRollBar */
 JPH_CAPI void JPH_VehicleAntiRollBar_Init(JPH_VehicleAntiRollBar* antiRollBar)
 {
@@ -10555,6 +10554,16 @@ void JPH_TrackedVehicleController_SetBrakeInput(JPH_TrackedVehicleController* co
 	AsTrackedVehicleController(controller)->SetBrakeInput(value);
 }
 
+JPH_VehicleEngine * JPH_TrackedVehicleController_GetEngine(JPH_TrackedVehicleController *controller)
+{
+	return ToVehicleEngine(&AsTrackedVehicleController(controller)->GetEngine());
+}
+
+JPH_VehicleTransmission * JPH_TrackedVehicleController_GetTransmission(JPH_TrackedVehicleController *controller)
+{
+	return ToVehicleTransmission(&AsTrackedVehicleController(controller)->GetTransmission());
+}
+
 /* MotorcycleController */
 JPH_MotorcycleControllerSettings* JPH_MotorcycleControllerSettings_Create(void)
 {
@@ -10697,6 +10706,16 @@ float JPH_MotorcycleController_GetLeanSmoothingFactor(const JPH_MotorcycleContro
 void JPH_MotorcycleController_SetLeanSmoothingFactor(JPH_MotorcycleController* controller, float value)
 {
 	AsMotorcycleController(controller)->SetLeanSmoothingFactor(value);
+}
+
+JPH_VehicleEngine * JPH_MotorcycleController_GetEngine(JPH_MotorcycleController *controller)
+{
+	return ToVehicleEngine(&AsMotorcycleController(controller)->GetEngine());
+}
+
+JPH_VehicleTransmission * JPH_MotorcycleController_GetTransmission(JPH_MotorcycleController *controller)
+{
+	return ToVehicleTransmission(&AsMotorcycleController(controller)->GetTransmission());
 }
 
 /* LinearCurve */
