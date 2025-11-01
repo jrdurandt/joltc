@@ -204,7 +204,9 @@ DEF_MAP_DECL(TrackedVehicleControllerSettings, JPH_TrackedVehicleControllerSetti
 DEF_MAP_DECL(TrackedVehicleController, JPH_TrackedVehicleController)
 
 DEF_MAP_DECL(VehicleEngineSettings, JPH_VehicleEngineSettings)
+DEF_MAP_DECL(VehicleEngine, JPH_VehicleEngine)
 DEF_MAP_DECL(VehicleTransmissionSettings, JPH_VehicleTransmissionSettings)
+DEF_MAP_DECL(VehicleTransmission, JPH_VehicleTransmission)
 DEF_MAP_DECL(VehicleCollisionTester, JPH_VehicleCollisionTester)
 DEF_MAP_DECL(VehicleCollisionTesterRay, JPH_VehicleCollisionTesterRay)
 DEF_MAP_DECL(VehicleCollisionTesterCastSphere, JPH_VehicleCollisionTesterCastSphere)
@@ -9651,6 +9653,46 @@ void JPH_VehicleEngineSettings_SetNormalizedTorque(JPH_VehicleEngineSettings* se
 	AsVehicleEngineSettings(settings)->mNormalizedTorque = *AsLinearCurve(value);
 }
 
+void JPH_VehicleEngine_ClampRPM(JPH_VehicleEngine *engine)
+{
+	AsVehicleEngine(engine)->ClampRPM();
+}
+
+float JPH_VehicleEngine_GetCurrentRPM(const JPH_VehicleEngine *engine)
+{
+	return AsVehicleEngine(engine)->GetCurrentRPM();
+}
+
+void JPH_VehicleEngine_SetCurrentRPM(JPH_VehicleEngine *engine, float rpm)
+{
+	AsVehicleEngine(engine)->SetCurrentRPM(rpm);
+}
+
+float JPH_VehicleEngine_GetAngularVelocity(const JPH_VehicleEngine *engine)
+{
+	return AsVehicleEngine(engine)->GetAngularVelocity();
+}
+
+float JPH_VehicleEngine_GetTorque(JPH_VehicleEngine *engine, float acceleration)
+{
+	return AsVehicleEngine(engine)->GetTorque(acceleration);
+}
+
+void JPH_VehicleEngine_ApplyTorque(JPH_VehicleEngine *engine, float torque, float deltaTime)
+{
+	return AsVehicleEngine(engine)->ApplyTorque(torque, deltaTime);
+}
+
+void JPH_VehicleEngine_ApplyDamping(JPH_VehicleEngine *engine, float deltaTime)
+{
+	AsVehicleEngine(engine)->ApplyDamping(deltaTime);
+}
+
+bool JPH_VehicleEngine_AllowSleep(const JPH_VehicleEngine *engine)
+{
+	return AsVehicleEngine(engine)->AllowSleep();
+}
+
 /* VehicleDifferentialSettings */
 void JPH_VehicleDifferentialSettings_Init(JPH_VehicleDifferentialSettings* settings)
 {
@@ -9840,6 +9882,42 @@ void JPH_VehicleTransmissionSettings_SetClutchStrength(JPH_VehicleTransmissionSe
 {
 	AsVehicleTransmissionSettings(settings)->mClutchStrength = value;
 }
+
+void JPH_VehicleTransmissions_Set(JPH_VehicleTransmission *transmission, int currentGear, float clutchFriction)
+{
+	AsVehicleTransmission(transmission)->Set(currentGear, clutchFriction);
+}
+
+void JPH_VehicleTransmission_Update(JPH_VehicleTransmission *transmission, float deltaTime, float currentRPM, float forwardInput, bool canShiftUp)
+{
+	AsVehicleTransmission(transmission)->Update(deltaTime, currentRPM, forwardInput, canShiftUp);
+}
+
+int JPH_VehicleTransmission_GetCurrentGear(const JPH_VehicleTransmission *transmission)
+{
+	return AsVehicleTransmission(transmission)->GetCurrentGear();
+}
+
+float JPH_VehicleTransmission_GetClutchFriction(const JPH_VehicleTransmission *transmission)
+{
+	return AsVehicleTransmission(transmission)->GetClutchFriction();
+}
+
+bool JPH_VehicleTransmission_IsSwitchingGear(const JPH_VehicleTransmission *transmission)
+{
+	return AsVehicleTransmission(transmission)->IsSwitchingGear();
+}
+
+float JPH_VehicleTransmission_GetCurrentRatio(const JPH_VehicleTransmission *transmission)
+{
+	return AsVehicleTransmission(transmission)->GetCurrentRatio();
+}
+
+bool JPH_VehicleTransmission_AllowSleep(const JPH_VehicleTransmission *transmission)
+{
+	return AsVehicleTransmission(transmission)->AllowSleep();
+}
+
 
 /* VehicleColliionTester */
 void JPH_VehicleCollisionTester_Destroy(JPH_VehicleCollisionTester* tester)
@@ -10340,9 +10418,18 @@ void JPH_WheeledVehicleController_SetTireMaxImpulseCallback(JPH_WheeledVehicleCo
 			inLateralSlip,
 			deltaTime);
 	});
-
-	// AsWheeledVehicleController(controller)->SetTireMaxImpulseCallback(callback);
 }
+
+JPH_VehicleEngine* JPH_WheeledVehicleController_GetEngine(JPH_WheeledVehicleController *controller)
+{
+	return ToVehicleEngine(&AsWheeledVehicleController(controller)->GetEngine());
+}
+
+JPH_VehicleTransmission* JPH_WheeledVehicleController_GetTransmission(JPH_WheeledVehicleController *controller)
+{
+	return ToVehicleTransmission(&AsWheeledVehicleController(controller)->GetTransmission());
+}
+
 
 /* WheelSettingsTV - WheelTV - TrackedVehicleController */
 JPH_WheelSettingsTV* JPH_WheelSettingsTV_Create(void)

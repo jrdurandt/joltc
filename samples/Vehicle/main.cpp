@@ -278,8 +278,6 @@ int main(void) {
     auto step_listener = JPH_VehicleConstraint_AsPhysicsStepListener(vehicle_constraint);
     JPH_PhysicsSystem_AddStepListener(system, step_listener);
 
-
-
     // Remove and destroy the floor
     JPH_BodyInterface_RemoveAndDestroyBody(bodyInterface, floorId);
 
