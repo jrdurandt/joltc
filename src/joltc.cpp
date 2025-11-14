@@ -203,6 +203,7 @@ DEF_MAP_DECL(TrackedVehicleControllerSettings, JPH_TrackedVehicleControllerSetti
 DEF_MAP_DECL(TrackedVehicleController, JPH_TrackedVehicleController)
 
 DEF_MAP_DECL(VehicleEngine, JPH_VehicleEngine)
+DEF_MAP_DECL(VehicleEngineSettings, JPH_VehicleEngineSettings)
 DEF_MAP_DECL(VehicleTransmission, JPH_VehicleTransmission)
 DEF_MAP_DECL(VehicleTransmissionSettings, JPH_VehicleTransmissionSettings)
 DEF_MAP_DECL(VehicleCollisionTester, JPH_VehicleCollisionTester)
@@ -9605,39 +9606,78 @@ JPH_CAPI void JPH_VehicleAntiRollBar_Init(JPH_VehicleAntiRollBar* antiRollBar)
 }
 
 /* VehicleEngineSettings */
-void JPH_VehicleEngineSettings_Init(JPH_VehicleEngineSettings* settings)
+JPH_VehicleEngineSettings* JPH_VehicleEngineSettings_Create(void)
 {
-	JPH_ASSERT(settings);
-
-	JPH::VehicleEngineSettings joltSettings{};
-	settings->maxTorque = joltSettings.mMaxTorque;
-	settings->minRPM = joltSettings.mMinRPM;
-	settings->maxRPM = joltSettings.mMaxRPM;
-	settings->inertia = joltSettings.mInertia;
-	settings->angularDamping = joltSettings.mAngularDamping;
+	JPH::VehicleEngineSettings* settings = new JPH::VehicleEngineSettings();
+	return ToVehicleEngineSettings(settings);
 }
 
-static void JPH_VehicleEngineSettings_FromJolt(JPH_VehicleEngineSettings* settings, const VehicleEngineSettings& joltSettings)
+void JPH_VehicleEngineSettings_Destroy(JPH_VehicleEngineSettings *settings)
 {
-	JPH_ASSERT(settings);
-
-	settings->maxTorque = joltSettings.mMaxTorque;
-	settings->minRPM = joltSettings.mMinRPM;
-	settings->maxRPM = joltSettings.mMaxRPM;
-	settings->inertia = joltSettings.mInertia;
-	settings->angularDamping = joltSettings.mAngularDamping;
+	if (settings)
+	{
+		delete AsVehicleEngineSettings(settings);
+	}
 }
 
-static void JPH_VehicleEngineSettings_ToJolt(VehicleEngineSettings* joltSettings, const JPH_VehicleEngineSettings* settings)
+float JPH_VehicleEngineSettings_GetMaxTorque(const JPH_VehicleEngineSettings* settings)
 {
-	JPH_ASSERT(joltSettings);
-	JPH_ASSERT(settings);
+	return AsVehicleEngineSettings(settings)->mMaxTorque;
+}
 
-	joltSettings->mMaxTorque = settings->maxTorque;
-	joltSettings->mMinRPM = settings->minRPM;
-	joltSettings->mMaxRPM = settings->maxRPM;
-	joltSettings->mInertia = settings->inertia;
-	joltSettings->mAngularDamping = settings->angularDamping;
+void JPH_VehicleEngineSettings_SetMaxTorque(JPH_VehicleEngineSettings* settings, float maxTorque)
+{
+	AsVehicleEngineSettings(settings)->mMaxTorque = maxTorque;
+}
+
+float JPH_VehicleEngineSettings_GetMinRPM(const JPH_VehicleEngineSettings* settings)
+{
+	return AsVehicleEngineSettings(settings)->mMinRPM;
+}
+
+void JPH_VehicleEngineSettings_SetMinRPM(JPH_VehicleEngineSettings* settings, float minRPM)
+{
+	AsVehicleEngineSettings(settings)->mMinRPM = minRPM;
+}
+
+float JPH_VehicleEngineSettings_GetMaxRPM(const JPH_VehicleEngineSettings* settings)
+{
+	return AsVehicleEngineSettings(settings)->mMaxRPM;
+}
+
+void JPH_VehicleEngineSettings_SetMaxRPM(JPH_VehicleEngineSettings* settings, float maxRPM)
+{
+	AsVehicleEngineSettings(settings)->mMaxRPM = maxRPM;
+}
+
+const JPH_LinearCurve* JPH_VehicleEngineSettings_GetNormalizedTorque(const JPH_VehicleEngineSettings* settings)
+{
+	return ToLinearCurve(&AsVehicleEngineSettings(settings)->mNormalizedTorque);
+}
+
+void JPH_VehicleEngineSettings_SetNormalizedTorque(JPH_VehicleEngineSettings* settings, JPH_LinearCurve* normalizedTorque)
+{
+	AsVehicleEngineSettings(settings)->mNormalizedTorque = *AsLinearCurve(normalizedTorque);
+}
+
+float JPH_VehicleEngineSettings_GetInertia(const JPH_VehicleEngineSettings* settings)
+{
+	return AsVehicleEngineSettings(settings)->mInertia;
+}
+
+void JPH_VehicleEngineSettings_SetInertia(JPH_VehicleEngineSettings* settings, float inertia)
+{
+	AsVehicleEngineSettings(settings)->mInertia = inertia;
+}
+
+float JPH_VehicleEngineSettings_GetAngularDamping(const JPH_VehicleEngineSettings* settings)
+{
+	return AsVehicleEngineSettings(settings)->mAngularDamping;
+}
+
+void JPH_VehicleEngineSettings_SetAngularDamping(JPH_VehicleEngineSettings* settings, float angularDamping)
+{
+	AsVehicleEngineSettings(settings)->mAngularDamping = angularDamping;
 }
 
 /* VehicleEngine */
@@ -10243,12 +10283,11 @@ JPH_WheeledVehicleControllerSettings* JPH_WheeledVehicleControllerSettings_Creat
 	return ToWheeledVehicleControllerSettings(settings);
 }
 
-void JPH_WheeledVehicleControllerSettings_GetEngine(const JPH_WheeledVehicleControllerSettings* settings, JPH_VehicleEngineSettings* result)
+const JPH_VehicleEngineSettings* JPH_WheeledVehicleControllerSettings_GetEngine(const JPH_WheeledVehicleControllerSettings* settings)
 {
 	JPH_ASSERT(settings);
-	JPH_ASSERT(result);
 
-	JPH_VehicleEngineSettings_FromJolt(result, AsWheeledVehicleControllerSettings(settings)->mEngine);
+	return ToVehicleEngineSettings(&AsWheeledVehicleControllerSettings(settings)->mEngine);
 }
 
 void JPH_WheeledVehicleControllerSettings_SetEngine(JPH_WheeledVehicleControllerSettings* settings, const JPH_VehicleEngineSettings* value)
@@ -10256,10 +10295,7 @@ void JPH_WheeledVehicleControllerSettings_SetEngine(JPH_WheeledVehicleController
 	JPH_ASSERT(settings);
 	JPH_ASSERT(value);
 
-	VehicleEngineSettings joltEngine;
-	JPH_VehicleEngineSettings_ToJolt(&joltEngine, value);
-
-	AsWheeledVehicleControllerSettings(settings)->mEngine = joltEngine;
+	AsWheeledVehicleControllerSettings(settings)->mEngine = *AsVehicleEngineSettings(value);
 }
 
 const JPH_VehicleTransmissionSettings* JPH_WheeledVehicleControllerSettings_GetTransmission(const JPH_WheeledVehicleControllerSettings* settings)
@@ -10463,12 +10499,11 @@ JPH_TrackedVehicleControllerSettings* JPH_TrackedVehicleControllerSettings_Creat
 	return ToTrackedVehicleControllerSettings(settings);
 }
 
-void JPH_TrackedVehicleControllerSettings_GetEngine(const JPH_TrackedVehicleControllerSettings* settings, JPH_VehicleEngineSettings* result)
+const JPH_VehicleEngineSettings* JPH_TrackedVehicleControllerSettings_GetEngine(const JPH_TrackedVehicleControllerSettings* settings)
 {
 	JPH_ASSERT(settings);
-	JPH_ASSERT(result);
 
-	JPH_VehicleEngineSettings_FromJolt(result, AsTrackedVehicleControllerSettings(settings)->mEngine);
+	return ToVehicleEngineSettings(&AsTrackedVehicleControllerSettings(settings)->mEngine);
 }
 
 void JPH_TrackedVehicleControllerSettings_SetEngine(JPH_TrackedVehicleControllerSettings* settings, const JPH_VehicleEngineSettings* value)
@@ -10476,10 +10511,7 @@ void JPH_TrackedVehicleControllerSettings_SetEngine(JPH_TrackedVehicleController
 	JPH_ASSERT(settings);
 	JPH_ASSERT(value);
 
-	VehicleEngineSettings joltEngine;
-	JPH_VehicleEngineSettings_ToJolt(&joltEngine, value);
-
-	AsTrackedVehicleControllerSettings(settings)->mEngine = joltEngine;
+	AsTrackedVehicleControllerSettings(settings)->mEngine = *AsVehicleEngineSettings(value);
 }
 
 const JPH_VehicleTransmissionSettings* JPH_TrackedVehicleControllerSettings_GetTransmission(const JPH_TrackedVehicleControllerSettings* settings)
